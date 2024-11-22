@@ -15,5 +15,4 @@ public class Main extends Application{
 		// TODO Auto-generated method stub
 		
 	}
-
 }
