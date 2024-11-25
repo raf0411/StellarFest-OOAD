@@ -11,7 +11,7 @@ import java.sql.Statement;
 public class Database {
 	private final String USERNAME = "raffi";
 	private final String PASSWORD = "soccerball99!";
-	private final String DATABASE = "scholarship";
+	private final String DATABASE = "stellarfestdb";
 	private final String HOST = "desktop-6mm7jdb";
 	private final String CONNECTION = String.format("jdbc:mysql://%s/%s", HOST, DATABASE);
 
@@ -66,7 +66,6 @@ public class Database {
 		try {
 			ps = connection.prepareStatement(query);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
