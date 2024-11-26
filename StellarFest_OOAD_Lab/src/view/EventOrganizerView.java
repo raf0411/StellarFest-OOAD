@@ -15,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Event;
 
@@ -23,15 +24,17 @@ public class EventOrganizerView extends Application{
 	
 	private Scene scene;
 	private BorderPane bp;
+	private GridPane gp;
 	private FlowPane fp;
 	private TableView<Event> table;
-	private Label titleLbl, eventIdLbl, eventNameLbl, eventDateLbl, eventLocationLbl;
+	private Label titleLbl, eventIdLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescriptionLbl;
 	private Vector<Event> events;
 	private String tempUserId;
 	
 	@Override
 	public void start(Stage s) throws Exception {
-        init();
+		init();
+		initAllEvents();
         arrangeComponent();
         
 		s.setTitle("EventOrganizer");
@@ -39,18 +42,11 @@ public class EventOrganizerView extends Application{
 		s.show();
 	}
 	
-	public void init() {
-		bp = new BorderPane();
-		fp = new FlowPane();
-		scene = new Scene(bp, 1280, 720);
-		table = new TableView<>();
-		events = new Vector<Event>();
-		titleLbl = new Label("Organized Events");
-		eventIdLbl = new Label("Event ID");
-		eventNameLbl = new Label("Event Name");
-		eventDateLbl = new Label("Event Date");
-		eventLocationLbl = new Label("Event Location");
+	public void initEventDetail() {
 		
+	}
+	
+	public void initAllEvents() {
 		TableColumn<Event, String> eventIdCol = new TableColumn("Event ID");
 		eventIdCol.setCellValueFactory(new PropertyValueFactory<>("event_id"));
 		eventIdCol.setMinWidth(100);
@@ -72,6 +68,21 @@ public class EventOrganizerView extends Application{
 		table.setOnMouseClicked(tableMouseEvent());
 		
 		refreshTable();
+	}
+	
+	public void init() {
+		bp = new BorderPane();
+		gp = new GridPane();
+		fp = new FlowPane();
+		scene = new Scene(bp, 1280, 720);
+		table = new TableView<>();
+		events = new Vector<Event>();
+		titleLbl = new Label("Organized Events");
+		eventIdLbl = new Label("Event ID");
+		eventNameLbl = new Label("Event Name");
+		eventDateLbl = new Label("Event Date");
+		eventLocationLbl = new Label("Event Location");
+		eventDescriptionLbl = new Label("Event Description");
 	}
 	
 	public void arrangeComponent() {

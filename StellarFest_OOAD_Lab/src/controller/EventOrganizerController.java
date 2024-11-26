@@ -4,9 +4,13 @@ import java.util.Vector;
 
 import model.Event;
 import model.EventOrganizer;
+import model.Guest;
+import model.Vendor;
 
 public class EventOrganizerController {
 	private EventOrganizer eventOrganizer = new EventOrganizer();
+	public Guest guest = new Guest();
+	public Vendor vendor = new Vendor();
 	private Vector<Event> events;
 	
 	public void createEvent(String eventName, String date, String location, String description, String organizerID) {
@@ -15,7 +19,7 @@ public class EventOrganizerController {
 	
 	public Vector<Event> viewOrganizedEvents(String userID) {
 	    if (events == null) {
-	        events = new Vector<>(); // Fallback to an empty vector if null
+	        events = new Vector<>();
 	    }
 	    
 		events = eventOrganizer.viewOrganizedEvents(userID);
@@ -24,6 +28,8 @@ public class EventOrganizerController {
 	}
 	
 	public void viewOrganizedEventDetails(String eventID) {
+		// Kasi lihat Vendors dan Guestsnya juga nanti
+		
 		
 	}
 	

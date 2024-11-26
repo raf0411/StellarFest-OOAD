@@ -8,6 +8,10 @@ public class Guest extends User{
 		// TODO Auto-generated constructor stub
 	}
 
+	public Guest() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void acceptInvitation(String eventID) {
 		
 	}

@@ -8,6 +8,10 @@ public class Vendor extends User{
 		// TODO Auto-generated constructor stub
 	}
 	
+	public Vendor() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void acceptInvitation(String eventID) {
 		
 	}
