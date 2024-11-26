@@ -207,6 +207,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 			userController.register(email, username, password, role);
 			message = "Register Successful! Please login now.";
 			infoLbl.setTextFill(Color.GREEN);
+			
 		} else {
 			message = "Register Failed! Please input valid details.";
 			infoLbl.setTextFill(Color.RED);
@@ -219,10 +220,28 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		String message;
 		String email = emailTF.getText();
 		String password = passwordPF.getText();
+		String role = userController.getUserByEmail(email).getUser_role();
+		String userId = userController.getUserByEmail(email).getUser_id();
 		
 		if(userController.login(email, password)) {
 			message = "Login Successful! Redirecting...";
 			infoLbl.setTextFill(Color.GREEN);
+			
+			Stage s = (Stage) infoLbl.getScene().getWindow();
+			
+			// Auth Role Based
+			switch(role) {
+				case "Event Organizer":
+					switchToEventOrganizerView(s, userId);
+					break;
+				case "Vendor":
+					break;
+				case "Guest":
+					break;
+					
+				default:
+					break;
+			}
 		} else {
 			message = "Login Failed! Please input correct details.";
 			infoLbl.setTextFill(Color.RED);
@@ -237,7 +256,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		initRegisForm();
 		arrangeForm();
 		
-		s.setTitle("User View");
+		s.setTitle("User");
 		s.setScene(scene);
 		s.setResizable(false);
 		s.show();
@@ -270,6 +289,17 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
         initLoginForm();
         arrangeForm();
         s.setScene(scene);
+	}
+	
+	private void switchToEventOrganizerView(Stage s, String userId) {
+		EventOrganizerView eventOrganizerView = new EventOrganizerView();
+		
+		try {
+			eventOrganizerView.setTempUserId(userId);
+			eventOrganizerView.start(s);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

@@ -65,7 +65,7 @@ public class User {
 	    User user = null;
 	    String query = "SELECT * FROM users WHERE user_email = ?";
 	    
-	    try (PreparedStatement stmt = db.prepareStatement(query)) {
+	    try (PreparedStatement stmt = db.getInstance().prepareStatement(query)) {
 	        stmt.setString(1, email);
 	        
 	        try (ResultSet rs = stmt.executeQuery()) {

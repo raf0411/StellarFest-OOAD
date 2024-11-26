@@ -1,7 +1,6 @@
 package model;
 
 public class Event {
-	private Event event;
 	private String event_id;
 	private String event_name;
 	private String event_date;
@@ -18,6 +17,10 @@ public class Event {
 		this.event_location = event_location;
 		this.event_description = event_description;
 		this.organizer_id = organizer_id;
+	}
+	
+	public Event() {
+		
 	}
 	
 	public void createEvent(String eventName, String date, String location, String description, String organizerID) {

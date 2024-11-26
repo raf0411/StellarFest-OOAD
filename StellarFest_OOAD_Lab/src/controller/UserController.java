@@ -3,7 +3,7 @@ package controller;
 import model.User;
 
 public class UserController {
-	User user = new User();
+	private User user = new User();
 	
 	public void register(String email, String name, String password, String role) {
 		user.register(email, name, password, role);
@@ -22,27 +22,29 @@ public class UserController {
 		
 	}
 	
-	public Boolean getUserByEmail(String email) {
+	public User getUserByEmail(String email) {
 		if(user.getUserByEmail(email) != null) {
-			return true;
+			user = user.getUserByEmail(email);
+			return user;
 		}
 		
-		return false;
+		return null;
 	}
 	
-	public Boolean getUserByUsername(String name) {
+	public User getUserByUsername(String name) {
 		if(user.getUserByUsername(name) != null) {
-			return true;
+			user = user.getUserByUsername(name);
+			return user;
 		}
 		
-		return false;
+		return null;
 	}
 	
 	public Boolean checkRegisterInput(String email, String name, String password, String role) {
 		// Validate Registration
-		if(email.isEmpty() || getUserByEmail(email)) {
+		if(email.isEmpty() || getUserByEmail(email) != null) {
 			return false;
-		} else if(name.isEmpty() || getUserByUsername(name)) {
+		} else if(name.isEmpty() || getUserByUsername(name) != null) {
 			return false;
 		} else if(password.isEmpty() || password.length() < 5) {
 			return false;

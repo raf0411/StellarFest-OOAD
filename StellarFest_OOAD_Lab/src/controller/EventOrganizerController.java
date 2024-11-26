@@ -1,12 +1,26 @@
 package controller;
 
+import java.util.Vector;
+
+import model.Event;
+import model.EventOrganizer;
+
 public class EventOrganizerController {
+	private EventOrganizer eventOrganizer = new EventOrganizer();
+	private Vector<Event> events;
+	
 	public void createEvent(String eventName, String date, String location, String description, String organizerID) {
 		
 	}
 	
-	public void viewOrganizedEvents(String userID) {
-		
+	public Vector<Event> viewOrganizedEvents(String userID) {
+	    if (events == null) {
+	        events = new Vector<>(); // Fallback to an empty vector if null
+	    }
+	    
+		events = eventOrganizer.viewOrganizedEvents(userID);
+	
+		return events;
 	}
 	
 	public void viewOrganizedEventDetails(String eventID) {
