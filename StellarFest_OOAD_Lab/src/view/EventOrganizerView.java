@@ -52,7 +52,7 @@ public class EventOrganizerView extends Application{
 		initAllOrganizedEvents();
 		arrangeOrganizedEvents();
         
-		s.setTitle("EventOrganizer");
+		s.setTitle("Event Organizer");
 		s.setScene(scene);
 		s.show();
 		
