@@ -6,6 +6,7 @@ import controller.EventOrganizerController;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,26 +26,30 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Event;
+import model.Guest;
+import model.Vendor;
 
 public class EventOrganizerView extends Application{
 	private EventOrganizerController eventOrganizerController = new EventOrganizerController();
 	
 	private Scene scene;
-	private BorderPane bp, detailPage;
+	private BorderPane bp, detailPage, vendorPage, guestPage, createEventPage, editEventPage;
 	private GridPane gp, detailContainer;
 	private HBox btnBox;
 	private FlowPane fp;
 	private TableView<Event> table;
+	private TableView<Vendor> vendorTable;
+	private TableView<Guest> guestTable;
 	private Label titleLbl, detailTitleLbl, eventIdLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescriptionLbl, eventAttendeesLbl;
 	private Label eventName, eventDate, eventLocation, eventDescription;
 	
 	private Vector<Event> events;
 	private String tempUserId;
-	private Button backBtn;
+	private Button backBtn, addVendorBtn, addGuestBtn;
 	
 	@Override
 	public void start(Stage s) throws Exception {
-		initAllOrgazniedEvents();
+		initAllOrganizedEvents();
 		arrangeOrganizedEvents();
         
 		s.setTitle("EventOrganizer");
@@ -54,14 +59,17 @@ public class EventOrganizerView extends Application{
 		table.setOnMouseClicked(tableMouseEvent(s));
 	
 		backBtn.setOnAction(event -> {
-			
+			initAllOrganizedEvents();
+			arrangeOrganizedEvents();
+			scene = new Scene(bp, 1280, 720);
+			s.setScene(scene);
 		});
 	}
 	
 	public void initOrganizedEventDetail() {
+		backBtn = new Button("Back");
 		detailContainer = new GridPane();
 		detailPage = new BorderPane();
-		
 		detailTitleLbl = new Label("Event Detail");
 		eventIdLbl = new Label("Event ID ");
 		eventNameLbl = new Label("Event Name ");
@@ -69,10 +77,12 @@ public class EventOrganizerView extends Application{
 		eventLocationLbl = new Label("Event Location:");
 		eventDescriptionLbl = new Label("Event Description ");
 		eventAttendeesLbl = new Label("Attendees ");
-		backBtn = new Button("Back");
 	}
 	
-	public void initAllOrgazniedEvents() {
+	public void initAllOrganizedEvents() {
+		backBtn = new Button("Back");
+		addVendorBtn = new Button("Add Vendor");
+		addGuestBtn = new Button("Add Guest");
 		bp = new BorderPane();
 		gp = new GridPane();
 		fp = new FlowPane();
@@ -80,6 +90,8 @@ public class EventOrganizerView extends Application{
 		table = new TableView<>();
 		events = new Vector<Event>();
 		titleLbl = new Label("Organized Events");
+		btnBox = new HBox();
+		
 		TableColumn<Event, String> eventIdCol = new TableColumn("Event ID");
 		eventIdCol.setCellValueFactory(new PropertyValueFactory<>("event_id"));
 		eventIdCol.setMinWidth(100);
@@ -101,8 +113,21 @@ public class EventOrganizerView extends Application{
 		refreshTable();
 	}
 	
+	public void initVendor() {
+		
+	}
+	
 	public void arrangeOrganizedEvents() {
+		btnBox.getChildren().add(addVendorBtn);
+		btnBox.setMargin(addVendorBtn, new Insets(10, 10, 10 ,50));
+		
+		btnBox.getChildren().add(addGuestBtn);
+		btnBox.setMargin(addGuestBtn, new Insets(10, 10, 10 , 50));
+		
+		btnBox.setAlignment(Pos.CENTER);
+		
 		bp.setTop(table);
+		bp.setBottom(btnBox);
 	} 
 	
 	public void arrangeOrganizedEventDetail() {
