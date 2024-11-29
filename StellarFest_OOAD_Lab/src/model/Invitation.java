@@ -1,11 +1,16 @@
 package model;
 
+import java.util.Vector;
+
+import database.Database;
+
 public class Invitation {
 	private String invitation_id;
 	private String event_id;
 	private String user_id;
 	private String invitation_status;
 	private String invitation_role;
+	private Database db = Database.getInstance();
 	
 	public Invitation(String invitation_id, String event_id, String user_id, String invitation_status,
 			String invitation_role) {
@@ -16,6 +21,10 @@ public class Invitation {
 		this.invitation_status = invitation_status;
 		this.invitation_role = invitation_role;
 	}
+	
+	public Invitation() {
+		
+	}
 
 	public void sendInvitation(String email) {
 		
@@ -25,8 +34,36 @@ public class Invitation {
 		
 	}
 	
-	public void getInvitations(String email) {
+	public Vector<Event> getInvitations(String email) {
+		Vector<Event> invitations = new Vector<Event>();
+		String query = "SELECT events.event_id, " +
+	               "events.event_name, " +
+	               "events.event_date, " +
+	               "events.event_location, " +
+	               "events.event_description, " +
+	               "users.user_id " +
+	               "FROM invitation " +
+	               "JOIN events ON invitation.event_id = events.event_id " +
+	               "JOIN users ON invitation.user_id = users.user_id ";
 		
+		db.resultSet = db.execQuery(query);
+		
+		try {
+			while(db.resultSet.next()) {
+				String eventId = db.resultSet.getString("events.event_id");
+				String eventName = db.resultSet.getString("events.event_name");
+				String eventDate = db.resultSet.getString("events.event_date");
+				String eventLocation = db.resultSet.getString("events.event_location");
+				String eventDescription = db.resultSet.getString("events.event_description");
+				String organizerId = db.resultSet.getString("users.user_id");
+				
+				invitations.add(new Event(eventId, eventName, eventDate, eventLocation, eventDescription, organizerId));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return invitations;
 	}
 	
 	// SETTER AND GETTER
