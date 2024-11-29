@@ -14,8 +14,8 @@ public class VendorController {
 		return invitations;
 	}
 	
-	public void acceptInvitation(String eventID) {
-		
+	public String acceptInvitation(String eventID, String userID, String invitationRole) {
+		return invitation.acceptInvitation(eventID, userID, invitationRole);
 	}
 	
 	public void viewAcceptedEvents(String email) {

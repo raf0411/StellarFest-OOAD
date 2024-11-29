@@ -21,6 +21,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Event;
 import model.Invitation;
@@ -28,7 +30,9 @@ import model.Invitation;
 public class VendorView extends Application implements EventHandler<ActionEvent>{
 	private VendorController vendorController = new VendorController();
 	private String email;
+	private String userId;
 	private String eventId;
+	private String message;
 	
 	Scene scene;
 	BorderPane borderContainer;
@@ -38,7 +42,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	Vector<Event> invitations;
 	Vector<Event> events;
 	HBox navbar;
-	Label successMsg;
+	Label messageLbl;
 	
 	@Override
 	public void start(Stage s) throws Exception {
@@ -53,13 +57,14 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	@Override
 	public void handle(ActionEvent e) {
 		if(e.getSource() == acceptBtn) {
-			System.out.println(eventId);
 			if(eventId == null) {
-				System.out.println("Please select an event!");
+				message = "Please select an event!";
+				messageLbl.setText(message);
+				messageLbl.setTextFill(Color.RED);
 				return;
 			}
 			
-			acceptInvitation(getEventId());
+			acceptInvitation(getEventId(), getUserId(), "Vendor");
 		}
 	}
 	
@@ -71,7 +76,13 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 				invitationTbm.setSelectionMode(SelectionMode.SINGLE);
 				Event selectedEvent = invitationTbm.getSelectedItem();
 				
-				setEventId(selectedEvent.getEvent_id());
+	            if (selectedEvent != null) {
+	                setEventId(selectedEvent.getEvent_id());
+	            } else {
+	                message = "Please select a valid event!";
+	                messageLbl.setText(message);
+	                messageLbl.setTextFill(Color.RED);
+	            }
 			}
 		};
 	}
@@ -83,7 +94,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		eventTable = new TableView<Event>();
 		invitations = new Vector<Event>();
 		events = new Vector<Event>();
-		successMsg = new Label("");
+		messageLbl = new Label("");
 		scene = new Scene(borderContainer, 1280, 720);
 		
 		invitationBtn = new Button("Invitation");
@@ -146,7 +157,8 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	    navbar.setMargin(eventBtn, new Insets(10));
 	    navbar.setAlignment(Pos.CENTER_LEFT);
 
-	    HBox bottomBox = new HBox();
+	    VBox bottomBox = new VBox();
+	    bottomBox.getChildren().add(messageLbl);
 	    bottomBox.getChildren().add(acceptBtn);
 	    bottomBox.setAlignment(Pos.CENTER); 
 	    bottomBox.setPadding(new Insets(10));
@@ -170,8 +182,11 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		invitations = vendorController.getInvitations(email);
 	}
 	
-	public void acceptInvitation(String eventID) {
-		
+	public void acceptInvitation(String eventID, String userID, String invitationRole) {
+		message = vendorController.acceptInvitation(eventID, userID, invitationRole);
+		messageLbl.setText(message);
+		messageLbl.setTextFill(Color.GREEN);
+		refreshTable();
 	}
 	
 	public void viewAcceptedEvents(String email) {
@@ -196,5 +211,13 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 
 	public void setEventId(String eventId) {
 		this.eventId = eventId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 }

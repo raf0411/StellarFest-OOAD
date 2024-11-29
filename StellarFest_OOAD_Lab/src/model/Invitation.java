@@ -1,8 +1,10 @@
 package model;
 
+import java.sql.SQLException;
 import java.util.Vector;
 
 import database.Database;
+import util.RandomIDGenerator;
 
 public class Invitation {
 	private String invitation_id;
@@ -30,9 +32,28 @@ public class Invitation {
 		
 	}
 	
-	public void acceptInvitation(String eventID) {
-		
+	public String acceptInvitation(String eventID, String userID, String invitationRole) {
+	    Invitation invitation;
+	    String invitationID = RandomIDGenerator.generateUniqueID();
+	    
+	    invitation = new Invitation(invitationID, eventID, userID, "Accepted", invitationRole);
+	    String message = "Invitation Accepted!";
+	    
+	    String query = "INSERT INTO invitation " +
+	                   "VALUES ('"+ invitationID +"', '"+ eventID +"', '"+ userID +"', '"+ "Accepted" +"', '"+ invitationRole +"')";
+	    
+	    db.execUpdate(query);
+	    
+	    String queryDelete = "DELETE FROM invitation " +
+                "WHERE event_id = '" + eventID + "' " +
+                "AND user_id = '" + userID + "' " +
+                "AND invitation_status = 'Pending'";
+	    
+		db.execUpdate(queryDelete);
+	    
+	    return message;
 	}
+
 	
 	public Vector<Event> getInvitations(String email) {
 		Vector<Event> invitations = new Vector<Event>();
@@ -44,7 +65,9 @@ public class Invitation {
 	               "users.user_id " +
 	               "FROM invitation " +
 	               "JOIN events ON invitation.event_id = events.event_id " +
-	               "JOIN users ON invitation.user_id = users.user_id ";
+	               "JOIN users ON invitation.user_id = users.user_id " + 
+	               "WHERE users.user_email = '"+ email +"' " +
+	               "AND invitation.invitation_status != 'Accepted'";
 		
 		db.resultSet = db.execQuery(query);
 		

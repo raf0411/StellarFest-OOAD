@@ -235,7 +235,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 					switchToEventOrganizerView(s, userId);
 					break;
 				case "Vendor":
-					switchToVendorView(s, email);
+					switchToVendorView(s, email, userId);
 				case "Guest":
 					switchToGuestView(s);
 					
@@ -302,10 +302,11 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		}
 	}
 	
-	private void switchToVendorView(Stage s, String email) {
+	private void switchToVendorView(Stage s, String email, String id) {
 		VendorView vendorView = new VendorView();
 		
 		try {
+			vendorView.setUserId(id);
 			vendorView.setEmail(email);
 			vendorView.start(s);
 		} catch (Exception e) {
