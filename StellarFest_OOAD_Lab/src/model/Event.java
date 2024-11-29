@@ -1,5 +1,9 @@
 package model;
 
+import java.util.Vector;
+
+import database.Database;
+
 public class Event {
 	private String event_id;
 	private String event_name;
@@ -7,6 +11,8 @@ public class Event {
 	private String event_location;
 	private String event_description;
 	private String organizer_id;
+	
+	private Database db = Database.getInstance();
 	
 	public Event(String event_id, String event_name, String event_date, String event_location, String event_description,
 			String organizer_id) {
@@ -29,6 +35,41 @@ public class Event {
 	
 	public void viewEventDetails(String eventID) {
 		
+	}
+	
+	public Vector<Event> viewAcceptedEvents(String email) {
+		Vector<Event> events = new Vector<Event>();
+		
+		String query = "SELECT events.event_id, " +
+	               "events.event_name, " +
+	               "events.event_date, " +
+	               "events.event_location, " +
+	               "events.event_description, " +
+	               "users.user_id " +
+	               "FROM invitation " +
+	               "JOIN events ON invitation.event_id = events.event_id " +
+	               "JOIN users ON invitation.user_id = users.user_id " + 
+	               "WHERE users.user_email = '"+ email +"' " +
+	               "AND invitation.invitation_status = 'Accepted'";
+		
+		db.resultSet = db.execQuery(query);
+		
+		try {
+			while(db.resultSet.next()) {
+				String eventId = db.resultSet.getString("events.event_id");
+				String eventName = db.resultSet.getString("events.event_name");
+				String eventDate = db.resultSet.getString("events.event_date");
+				String eventLocation = db.resultSet.getString("events.event_location");
+				String eventDescription = db.resultSet.getString("events.event_description");
+				String organizerId = db.resultSet.getString("users.user_id");
+				
+				events.add(new Event(eventId, eventName, eventDate, eventLocation, eventDescription, organizerId));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return events;
 	}
 	
 	// SETTER AND GETTER

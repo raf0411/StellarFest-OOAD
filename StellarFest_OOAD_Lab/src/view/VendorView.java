@@ -20,9 +20,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Event;
 import model.Invitation;
@@ -36,14 +38,17 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	
 	Scene scene;
 	BorderPane borderContainer;
+	GridPane eventDetailContainer;
 	Button invitationBtn, eventBtn, acceptBtn;
 	TableView<Event> invitationTable;
 	TableView<Event> eventTable;
 	Vector<Event> invitations;
 	Vector<Event> events;
 	HBox navbar;
-	Label messageLbl;
-	
+	Label messageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
+		  eventName, eventDate, eventLocation, eventDesc;
+    VBox invitationBottomBox, eventBottomBox, eventDetailBox;
+    
 	@Override
 	public void start(Stage s) throws Exception {
 		init();
@@ -57,6 +62,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	@Override
 	public void handle(ActionEvent e) {
 		if(e.getSource() == acceptBtn) {
+			
 			if(eventId == null) {
 				message = "Please select an event!";
 				messageLbl.setText(message);
@@ -65,6 +71,10 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 			}
 			
 			acceptInvitation(getEventId(), getUserId(), "Vendor");
+		} else if(e.getSource() == invitationBtn) {
+			getInvitations(email);
+		} else if(e.getSource() == eventBtn) {
+			viewAcceptedEvents(email);
 		}
 	}
 	
@@ -87,8 +97,27 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		};
 	}
 	
+	private EventHandler<MouseEvent> eventTableMouseEvent(){
+		return new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				TableSelectionModel<Event> eventTableTbm = eventTable.getSelectionModel();
+				eventTableTbm.setSelectionMode(SelectionMode.SINGLE);
+				Event selectedEvent = eventTableTbm.getSelectedItem();
+				
+				eventName.setText(selectedEvent.getEvent_name());
+				eventDate.setText(selectedEvent.getEvent_date());
+				eventLocation.setText(selectedEvent.getEvent_location());
+				eventDesc.setText(selectedEvent.getEvent_description());
+				
+				borderContainer.setCenter(eventDetailBox);
+			}
+		};
+	}
+	
 	public void init() {
 		borderContainer = new BorderPane();
+		eventDetailContainer = new GridPane();
 		navbar = new HBox();
 		invitationTable = new TableView<Event>();
 		eventTable = new TableView<Event>();
@@ -96,6 +125,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		events = new Vector<Event>();
 		messageLbl = new Label("");
 		scene = new Scene(borderContainer, 1280, 720);
+		eventDetailBox = new VBox();
 		
 		invitationBtn = new Button("Invitation");
 		invitationBtn.setOnAction(this);
@@ -105,6 +135,19 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		
 		acceptBtn = new Button("Accept");
 		acceptBtn.setOnAction(this);
+		
+		invitationBottomBox = new VBox();
+		eventBottomBox = new VBox();
+		
+		eventDetailTitle = new Label("Event Detail");
+		eventNameLbl = new Label("Event Name: ");
+		eventName = new Label("");
+		eventDateLbl = new Label("Event Date: ");
+		eventDate = new Label("");
+		eventLocationLbl = new Label("Event Location: ");
+		eventLocation = new Label("");
+		eventDescLbl = new Label("Event Description: ");
+		eventDesc = new Label("");
 		
 		TableColumn<Event, String> id = new TableColumn("Event ID");
 		id.setCellValueFactory(new PropertyValueFactory<>("event_id"));
@@ -126,28 +169,30 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		organizerCol.setMinWidth(50);
 		
 		invitationTable.getColumns().addAll(id, eventCol, dateCol, locationCol, descCol, organizerCol);
-//		invitationTable.setOnMouseClicked(tableMouseEvent());
 		
-//		TableColumn<Event, String> eventIdCol = new TableColumn("ID");
-//		eventIdCol.setCellValueFactory(new PropertyValueFactory<>("event_id"));
-//		eventIdCol.setMinWidth(300);
-//		TableColumn<Event, String> eventNameCol = new TableColumn("Event Name");
-//		eventNameCol.setCellValueFactory(new PropertyValueFactory<>("event_name"));
-//		eventNameCol.setMinWidth (300);
-//		TableColumn<Event, String> eventDateCol = new TableColumn("Event Date");
-//		eventDateCol.setCellValueFactory(new PropertyValueFactory<>("event_date"));
-//		eventDateCol.setMinWidth(300);
-//		TableColumn<Event, String> eventLocationCol = new TableColumn("Event Location");
-//		eventLocationCol.setCellValueFactory (new PropertyValueFactory<>("event_location"));
-//		eventLocationCol.setMinWidth(300);
-//		TableColumn<Event, String> organizerCol = new TableColumn("Organizer");
-//		organizerCol.setCellValueFactory (new PropertyValueFactory<>("organizer_id"));
-//		organizerCol.setMinWidth(300);
-//		
-//		eventTable.getColumns().addAll(eventIdCol, eventNameCol, eventDateCol, eventLocationCol, organizerCol);
-//		eventTable.setOnMouseClicked(tableMouseEvent());
+		TableColumn<Event, String> acceptedEventIdCol = new TableColumn("ID");
+		acceptedEventIdCol.setCellValueFactory(new PropertyValueFactory<>("event_id"));
+		acceptedEventIdCol.setMinWidth(100);
+		TableColumn<Event, String> acceptedEventName = new TableColumn("Event Name");
+		acceptedEventName.setCellValueFactory(new PropertyValueFactory<>("event_name"));
+		acceptedEventName.setMinWidth (200);
+		TableColumn<Event, String> acceptedEventDateCol = new TableColumn("Event Date");
+		acceptedEventDateCol.setCellValueFactory(new PropertyValueFactory<>("event_date"));
+		acceptedEventDateCol.setMinWidth(200);
+		TableColumn<Event, String> acceptedEventLocationCol = new TableColumn("Event Location");
+		acceptedEventLocationCol.setCellValueFactory (new PropertyValueFactory<>("event_location"));
+		acceptedEventLocationCol.setMinWidth(300);
+		TableColumn<Event, String> acceptedDescCol = new TableColumn("Description");
+		acceptedDescCol.setCellValueFactory (new PropertyValueFactory<>("event_description"));
+		acceptedDescCol.setMinWidth(500);
+		TableColumn<Event, String> acceptedOrganizerCol = new TableColumn("Organizer");
+		acceptedOrganizerCol.setCellValueFactory (new PropertyValueFactory<>("organizer_id"));
+		acceptedOrganizerCol.setMinWidth(100);
+		
+		eventTable.getColumns().addAll(acceptedEventIdCol, acceptedEventName, acceptedEventDateCol, acceptedEventLocationCol, acceptedDescCol, acceptedOrganizerCol);
 		
 		invitationTable.setOnMouseClicked(invitationTableMouseEvent());
+		eventTable.setOnMouseClicked(eventTableMouseEvent());
 		refreshTable();
 	}
 	
@@ -156,16 +201,52 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	    navbar.setMargin(invitationBtn, new Insets(10));
 	    navbar.setMargin(eventBtn, new Insets(10));
 	    navbar.setAlignment(Pos.CENTER_LEFT);
-
-	    VBox bottomBox = new VBox();
-	    bottomBox.getChildren().add(messageLbl);
-	    bottomBox.getChildren().add(acceptBtn);
-	    bottomBox.setAlignment(Pos.CENTER); 
-	    bottomBox.setPadding(new Insets(10));
+	    
+	    invitationBottomBox.getChildren().add(messageLbl);
+	    invitationBottomBox.getChildren().add(acceptBtn);
+	    invitationBottomBox.setAlignment(Pos.CENTER);
+	    invitationBottomBox.setPadding(new Insets(10));
 
 	    borderContainer.setTop(navbar);
-	    borderContainer.setCenter(invitationTable);
-	    borderContainer.setBottom(bottomBox);
+	    
+	    eventDetailTitle.setFont(new Font("Verdana", 24));
+	    eventDetailTitle.setStyle("-fx-font-weight: bold");
+	    
+	    eventNameLbl.setFont(new Font("Verdana", 16));
+	    eventNameLbl.setStyle("-fx-font-weight: bold");
+	    
+	    eventDateLbl.setFont(new Font("Verdana", 16));
+	    eventDateLbl.setStyle("-fx-font-weight: bold");
+	    
+	    eventLocationLbl.setFont(new Font("Verdana", 6));
+	    eventLocationLbl.setStyle("-fx-font-weight: bold");
+	    
+	    eventDescLbl.setFont(new Font("Verdana", 16));
+	    eventDescLbl.setStyle("-fx-font-weight: bold");
+	    
+		eventDetailContainer.add(eventNameLbl, 0, 0);
+		eventDetailContainer.add(eventName, 1, 0);
+		
+		eventDetailContainer.add(eventDateLbl, 0, 1);
+		eventDetailContainer.add(eventDate, 1, 1);
+		
+		eventDetailContainer.add(eventLocationLbl, 0, 2);
+		eventDetailContainer.add(eventLocation, 1, 2);
+		
+		eventDetailContainer.add(eventDescLbl, 0, 3);
+		eventDetailContainer.add(eventDesc, 1, 3);
+		
+		eventDetailContainer.setPadding (new Insets (20));
+		eventDetailContainer.setVgap(10);
+		eventDetailContainer.setHgap(10);
+	    
+		eventDetailContainer.setAlignment(Pos.CENTER);
+	    eventDetailBox.getChildren().add(eventDetailTitle);
+	    eventDetailBox.setMargin(eventDetailTitle, new Insets(10, 10, 10, 10));
+	    
+	    eventDetailBox.getChildren().add(eventDetailContainer);
+	    
+	    eventDetailBox.setAlignment(Pos.CENTER);
 	}
 	
 	public void refreshTable() {
@@ -173,6 +254,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	    ObservableList<Event> regInvObs = FXCollections.observableArrayList(invitations);
 	    invitationTable.setItems(regInvObs);
 	    
+	    viewAcceptedEvents(email);
 	    ObservableList<Event> regEvObs = FXCollections.observableArrayList(events);
 	    eventTable.setItems(regEvObs);
 	}
@@ -180,6 +262,9 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	public void getInvitations(String email) {
 		invitations.removeAllElements();
 		invitations = vendorController.getInvitations(email);
+		
+		borderContainer.setCenter(invitationTable);
+		borderContainer.setBottom(invitationBottomBox);
 	}
 	
 	public void acceptInvitation(String eventID, String userID, String invitationRole) {
@@ -190,7 +275,11 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	}
 	
 	public void viewAcceptedEvents(String email) {
+		events.removeAllElements();
+		events = vendorController.viewAcceptedEvents(email);
 		
+		borderContainer.setCenter(eventTable);
+		borderContainer.setBottom(eventBottomBox);
 	}
 	
 	public void manageVendor(String description, String product) {

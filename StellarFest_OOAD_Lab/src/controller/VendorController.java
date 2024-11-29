@@ -7,6 +7,7 @@ import model.Invitation;
 
 public class VendorController {
 	Invitation invitation = new Invitation();
+	Event event = new Event();
 	
 	public Vector<Event> getInvitations(String email) {
 		Vector<Event> invitations = invitation.getInvitations(email);;
@@ -18,8 +19,9 @@ public class VendorController {
 		return invitation.acceptInvitation(eventID, userID, invitationRole);
 	}
 	
-	public void viewAcceptedEvents(String email) {
-		
+	public Vector<Event> viewAcceptedEvents(String email) {
+		Vector<Event> events = event.viewAcceptedEvents(email);
+		return events;
 	}
 	
 	public void manageVendor(String description, String product) {
