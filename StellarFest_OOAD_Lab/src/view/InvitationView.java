@@ -1,6 +1,9 @@
 package view;
 
+import java.util.Vector;
+
 import controller.InvitationController;
+import model.Event;
 
 public class InvitationView {
 	private InvitationController invitationController;
@@ -13,7 +16,7 @@ public class InvitationView {
 		
 	}
 	
-	public void getInvitations(String email) {
-		
+	public Vector<Event> getInvitations(String email) {
+		return null;
 	}
 }

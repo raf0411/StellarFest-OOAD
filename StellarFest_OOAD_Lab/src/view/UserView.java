@@ -237,7 +237,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 				case "Vendor":
 					switchToVendorView(s, email, userId);
 				case "Guest":
-					switchToGuestView(s);
+					switchToGuestView(s, email, userId);
 					
 				default:
 					break;
@@ -314,8 +314,16 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		}
 	}
 	
-	private void switchToGuestView(Stage s) {
-
+	private void switchToGuestView(Stage s, String id, String email) {
+		GuestView guestView = new GuestView();
+		
+		try {
+			guestView.setUserID(id);
+			guestView.setEmail(email);
+			guestView.start(s);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

@@ -58,16 +58,16 @@ public class Invitation {
 	public Vector<Event> getInvitations(String email) {
 		Vector<Event> invitations = new Vector<Event>();
 		String query = "SELECT events.event_id, " +
-	               "events.event_name, " +
-	               "events.event_date, " +
-	               "events.event_location, " +
-	               "events.event_description, " +
-	               "users.user_id " +
-	               "FROM invitation " +
-	               "JOIN events ON invitation.event_id = events.event_id " +
-	               "JOIN users ON invitation.user_id = users.user_id " + 
-	               "WHERE users.user_email = '"+ email +"' " +
-	               "AND invitation.invitation_status != 'Accepted'";
+		               "events.event_name, " +
+		               "events.event_date, " +
+		               "events.event_location, " +
+		               "events.event_description, " +
+		               "users.user_id " +
+		               "FROM invitation " +
+		               "JOIN events ON invitation.event_id = events.event_id " +
+		               "JOIN users ON invitation.user_id = users.user_id " + 
+		               "WHERE users.user_email = '"+ email +"' " +
+		               "AND invitation.invitation_status != 'Accepted'";
 		
 		db.resultSet = db.execQuery(query);
 		

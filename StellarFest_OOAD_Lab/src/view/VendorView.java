@@ -2,6 +2,7 @@ package view;
 
 import java.util.Vector;
 
+import controller.InvitationController;
 import controller.VendorController;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableSelectionModel;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -31,6 +33,8 @@ import model.Invitation;
 
 public class VendorView extends Application implements EventHandler<ActionEvent>{
 	private VendorController vendorController = new VendorController();
+	private InvitationController invitationController = new InvitationController();
+	
 	private String email;
 	private String userId;
 	private String eventId;
@@ -38,16 +42,18 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	
 	Scene scene;
 	BorderPane borderContainer;
-	GridPane eventDetailContainer;
-	Button invitationBtn, eventBtn, acceptBtn;
+	GridPane eventDetailContainer, manageVendorContainer;
+	Button invitationBtn, eventBtn, acceptBtn, manageVendorBtn, saveBtn;
 	TableView<Event> invitationTable;
 	TableView<Event> eventTable;
 	Vector<Event> invitations;
 	Vector<Event> events;
 	HBox navbar;
 	Label messageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
-		  eventName, eventDate, eventLocation, eventDesc;
-    VBox invitationBottomBox, eventBottomBox, eventDetailBox;
+		  eventName, eventDate, eventLocation, eventDesc,
+		  productNameLbl, productDescLbl, manageVendorTitle;
+    VBox invitationBottomBox, eventBottomBox, eventDetailBox, manageVendorBox;
+    TextField productNameTF, productDescTF;
     
 	@Override
 	public void start(Stage s) throws Exception {
@@ -62,7 +68,6 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	@Override
 	public void handle(ActionEvent e) {
 		if(e.getSource() == acceptBtn) {
-			
 			if(eventId == null) {
 				message = "Please select an event!";
 				messageLbl.setText(message);
@@ -71,10 +76,23 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 			}
 			
 			acceptInvitation(getEventId(), getUserId(), "Vendor");
+			
 		} else if(e.getSource() == invitationBtn) {
 			getInvitations(email);
+			
 		} else if(e.getSource() == eventBtn) {
 			viewAcceptedEvents(email);
+			
+		} else if(e.getSource() == manageVendorBtn) {
+			initManageVendor();
+			
+		} else if(e.getSource() == saveBtn) {
+			productNameTF.setText("");
+			productDescTF.setText("");
+			
+			String productName = productNameTF.getText();
+			String productDesc = productDescTF.getText();
+			manageVendor(productDesc, productName);
 		}
 	}
 	
@@ -104,6 +122,10 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 				TableSelectionModel<Event> eventTableTbm = eventTable.getSelectionModel();
 				eventTableTbm.setSelectionMode(SelectionMode.SINGLE);
 				Event selectedEvent = eventTableTbm.getSelectedItem();
+				
+				if(selectedEvent == null) {
+					return;
+				}
 				
 				eventName.setText(selectedEvent.getEvent_name());
 				eventDate.setText(selectedEvent.getEvent_date());
@@ -135,6 +157,14 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		
 		acceptBtn = new Button("Accept");
 		acceptBtn.setOnAction(this);
+		
+		manageVendorBtn = new Button("Manage Vendor");
+		manageVendorBtn.setOnAction(this);
+		
+		productNameTF = new TextField();
+		productDescTF = new TextField();
+		productNameLbl = new Label("Product Name: ");
+		productDescLbl = new Label("Product Description: ");
 		
 		invitationBottomBox = new VBox();
 		eventBottomBox = new VBox();
@@ -196,8 +226,46 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		refreshTable();
 	}
 	
+	public void initManageVendor() {
+	    messageLbl.setText("");
+
+	    manageVendorContainer = new GridPane();
+	    manageVendorTitle = new Label("Manage Product");
+	    manageVendorTitle.setFont(new Font("Verdana", 24));
+	    manageVendorTitle.setStyle("-fx-font-weight: bold");
+
+	    saveBtn = new Button("Save Changes");
+	    saveBtn.setOnAction(this);
+	    manageVendorBox = new VBox();
+
+	    manageVendorContainer.add(productNameLbl, 0, 0);
+	    manageVendorContainer.add(productNameTF, 1, 0);
+
+	    manageVendorContainer.add(productDescLbl, 0, 1);
+	    manageVendorContainer.add(productDescTF, 1, 1);
+
+	    manageVendorContainer.setAlignment(Pos.CENTER);
+
+	    manageVendorBox.getChildren().add(manageVendorTitle);
+	    manageVendorBox.getChildren().add(manageVendorContainer);
+	    manageVendorBox.setMargin(manageVendorTitle, new Insets(10, 10, 10, 10));
+
+	    manageVendorBox.setAlignment(Pos.CENTER);
+
+	    VBox bottomBox = new VBox();
+
+	    bottomBox.getChildren().add(messageLbl);
+	    bottomBox.getChildren().add(saveBtn);
+	    bottomBox.setAlignment(Pos.CENTER);
+
+	    bottomBox.setMargin(saveBtn, new Insets(10, 10, 10, 10));
+
+	    borderContainer.setCenter(manageVendorBox);
+	    borderContainer.setBottom(bottomBox);
+	}
+	
 	public void arrangeComponent() {
-	    navbar.getChildren().addAll(invitationBtn, eventBtn);
+	    navbar.getChildren().addAll(invitationBtn, eventBtn, manageVendorBtn);
 	    navbar.setMargin(invitationBtn, new Insets(10));
 	    navbar.setMargin(eventBtn, new Insets(10));
 	    navbar.setAlignment(Pos.CENTER_LEFT);
@@ -261,7 +329,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	
 	public void getInvitations(String email) {
 		invitations.removeAllElements();
-		invitations = vendorController.getInvitations(email);
+		invitations = invitationController.getInvitations(email);
 		
 		borderContainer.setCenter(invitationTable);
 		borderContainer.setBottom(invitationBottomBox);
@@ -283,11 +351,17 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	}
 	
 	public void manageVendor(String description, String product) {
+		if(vendorController.checkManageVendorInput(description, product)) { 
+			message = vendorController.manageVendor(description, product);
+			messageLbl.setTextFill(Color.GREEN);
+			messageLbl.setText(message);
+			return;
+		}
 		
-	}
-	
-	public void checkManageVendorInput(String description, String product) {
-		
+		message = "Input product invalid!";
+		messageLbl.setTextFill(Color.RED);
+		messageLbl.setText(message);
+		return;
 	}
 
 	public void setEmail(String email) {
