@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 public class UserView extends Application implements EventHandler<ActionEvent>{
 	private UserController userController = new UserController();
 	
+	Stage stage;
 	Scene scene;
 	BorderPane bp;
 	GridPane gp;
@@ -35,7 +36,34 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 	ComboBox<String> rolesCB;
 	Button regisBtn, loginBtn, changeBtn, toLoginBtn, toRegisBtn;
 	
+	@Override
+	public void start(Stage stage) throws Exception {
+		init();
+		initRegisForm();
+		arrangeForm();
+		
+		this.stage = stage;
+		this.stage.setTitle("User");
+		this.stage.setScene(scene);
+		this.stage.setResizable(false);
+		this.stage.show();
+	}
+	
+	@Override
+	public void handle(ActionEvent e) {
+		if(e.getSource() == regisBtn) {
+			registerUser();
+		} else if(e.getSource() == loginBtn) {
+			loginUser();
+		} else if(e.getSource() == toLoginBtn) {
+			switchToLoginPage(stage);
+		} else if(e.getSource() == toRegisBtn) {
+			switchToRegisPage(stage);
+		}
+	}
+	
 	public void init() {
+		stage = new Stage();
 		bp = new BorderPane();
 		gp = new GridPane();
 		formContainer = new GridPane();
@@ -63,7 +91,10 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		loginBtn.setOnAction(this);
 		
 		toLoginBtn = new Button("login");
+		toLoginBtn.setOnAction(this);
+		
 		toRegisBtn = new Button("register");
+		toRegisBtn.setOnAction(this);
 		
 		rolesCB.getItems().add("Event Organizer");
 		rolesCB.getItems().add("Vendor");
@@ -227,21 +258,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 			message = "Login Successful! Redirecting...";
 			infoLbl.setTextFill(Color.GREEN);
 			
-			Stage s = (Stage) infoLbl.getScene().getWindow();
-			
-			// Auth Role Based
-			switch(role) {
-				case "Event Organizer":
-					switchToEventOrganizerView(s, userId);
-					break;
-				case "Vendor":
-					switchToVendorView(s, email, userId);
-				case "Guest":
-					switchToGuestView(s, email, userId);
-					
-				default:
-					break;
-			}
+			authUser(role, userId, email);
 		} else {
 			message = "Login Failed! Please input correct details.";
 			infoLbl.setTextFill(Color.RED);
@@ -249,25 +266,24 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		
 		infoLbl.setText(message);
 	}
-
-	@Override
-	public void start(Stage s) throws Exception {
-		init();
-		initRegisForm();
-		arrangeForm();
-		
-		s.setTitle("User");
-		s.setScene(scene);
-		s.setResizable(false);
-		s.show();
-		
-		toLoginBtn.setOnAction(event -> {
-			swtichToLoginPage(s);
-		});
-		
-		toRegisBtn.setOnAction(event -> {
-			swtichToRegisPage(s);
-		});
+	
+	// Auth Role Based
+	public void authUser(String userRole, String userId, String email) {
+		switch(userRole) {
+			case "Event Organizer":
+				switchToEventOrganizerView(stage, userId);
+				break;
+			case "Vendor":
+				switchToVendorView(stage, email, userId);
+				break;
+			case "Guest":
+				switchToGuestView(stage, email, userId);
+				break;
+			case "Admin":
+				switchToAdminView(stage);
+			default:
+				break;
+		}
 	}
 	
 	private void clearForm() {
@@ -277,14 +293,14 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 	    fp.getChildren().clear();
 	}
 	
-	private void swtichToRegisPage(Stage s) {
+	private void switchToRegisPage(Stage s) {
 		clearForm();
         initRegisForm();
         arrangeForm();
         s.setScene(scene);
 	}
 	
-	private void swtichToLoginPage(Stage s) {
+	private void switchToLoginPage(Stage s) {
 		clearForm();
         initLoginForm();
         arrangeForm();
@@ -325,13 +341,14 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public void handle(ActionEvent e) {
-		if(e.getSource() == regisBtn) {
-			registerUser();
-		}else if(e.getSource() == loginBtn) {
-			loginUser();
+	
+	private void switchToAdminView(Stage s) {
+		AdminView adminView = new AdminView();
+		
+		try {
+			adminView.start(s);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

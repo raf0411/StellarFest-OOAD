@@ -14,6 +14,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableSelectionModel;
@@ -40,15 +43,20 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	private String eventId;
 	private String message;
 	
+	Menu navMenu;
+	MenuItem invitationNav;
+	MenuItem eventNav;
+	MenuItem manageVendorNav;
+	MenuBar navBar;
+	
 	Scene scene;
 	BorderPane borderContainer;
 	GridPane eventDetailContainer, manageVendorContainer;
-	Button invitationBtn, eventBtn, acceptBtn, manageVendorBtn, saveBtn;
+	Button acceptBtn, manageVendorBtn, saveBtn;
 	TableView<Event> invitationTable;
 	TableView<Event> eventTable;
 	Vector<Event> invitations;
 	Vector<Event> events;
-	HBox navbar;
 	Label messageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
 		  eventName, eventDate, eventLocation, eventDesc,
 		  productNameLbl, productDescLbl, manageVendorTitle;
@@ -77,15 +85,14 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 			
 			acceptInvitation(getEventId(), getUserId(), "Vendor");
 			
-		} else if(e.getSource() == invitationBtn) {
+		} else if(e.getSource() == invitationNav) {
 			getInvitations(email);
 			
-		} else if(e.getSource() == eventBtn) {
+		} else if(e.getSource() == eventNav) {
 			viewAcceptedEvents(email);
 			
-		} else if(e.getSource() == manageVendorBtn) {
+		} else if(e.getSource() == manageVendorNav) {
 			initManageVendor();
-			
 		} else if(e.getSource() == saveBtn) {
 			productNameTF.setText("");
 			productDescTF.setText("");
@@ -138,9 +145,23 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	}
 	
 	public void init() {
+		navMenu = new Menu("Menu");
+		invitationNav = new MenuItem("Invitation");
+		invitationNav.setOnAction(this);
+		eventNav = new MenuItem("Event");
+		eventNav.setOnAction(this);
+		manageVendorNav = new MenuItem("Manage Vendor");
+		manageVendorNav.setOnAction(this);
+		navBar = new MenuBar();
+		
+		navMenu.getItems().add(invitationNav);
+		navMenu.getItems().add(eventNav);
+		navMenu.getItems().add(manageVendorNav);
+		
+		navBar.getMenus().add(navMenu);
+		
 		borderContainer = new BorderPane();
 		eventDetailContainer = new GridPane();
-		navbar = new HBox();
 		invitationTable = new TableView<Event>();
 		eventTable = new TableView<Event>();
 		invitations = new Vector<Event>();
@@ -148,12 +169,6 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		messageLbl = new Label("");
 		scene = new Scene(borderContainer, 1280, 720);
 		eventDetailBox = new VBox();
-		
-		invitationBtn = new Button("Invitation");
-		invitationBtn.setOnAction(this);
-		
-		eventBtn = new Button("Event");
-		eventBtn.setOnAction(this);
 		
 		acceptBtn = new Button("Accept");
 		acceptBtn.setOnAction(this);
@@ -265,17 +280,12 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	}
 	
 	public void arrangeComponent() {
-	    navbar.getChildren().addAll(invitationBtn, eventBtn, manageVendorBtn);
-	    navbar.setMargin(invitationBtn, new Insets(10));
-	    navbar.setMargin(eventBtn, new Insets(10));
-	    navbar.setAlignment(Pos.CENTER_LEFT);
-	    
 	    invitationBottomBox.getChildren().add(messageLbl);
 	    invitationBottomBox.getChildren().add(acceptBtn);
 	    invitationBottomBox.setAlignment(Pos.CENTER);
 	    invitationBottomBox.setPadding(new Insets(10));
 
-	    borderContainer.setTop(navbar);
+	    borderContainer.setTop(navBar);
 	    
 	    eventDetailTitle.setFont(new Font("Verdana", 24));
 	    eventDetailTitle.setStyle("-fx-font-weight: bold");
