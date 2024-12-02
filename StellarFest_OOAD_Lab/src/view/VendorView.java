@@ -323,7 +323,6 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	    eventDetailBox.setMargin(eventDetailTitle, new Insets(10, 10, 10, 10));
 	    
 	    eventDetailBox.getChildren().add(eventDetailContainer);
-	    
 	    eventDetailBox.setAlignment(Pos.CENTER);
 	}
 	

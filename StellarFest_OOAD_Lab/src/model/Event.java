@@ -72,6 +72,30 @@ public class Event {
 		return events;
 	}
 	
+	public Vector<Event> getAllEvents(){
+		Vector<Event> events = new Vector<Event>();
+		
+		String query = "SELECT * FROM events";
+		db.resultSet = db.execQuery(query);
+		
+		try {
+			while(db.resultSet.next()) {
+				String eventId = db.resultSet.getString("event_id");
+				String eventName = db.resultSet.getString("event_name");
+				String eventDate = db.resultSet.getString("event_date");
+				String eventLocation = db.resultSet.getString("event_location");
+				String eventDescription = db.resultSet.getString("event_description");
+				String organizerId = db.resultSet.getString("organizer_id");
+				
+				events.add(new Event(eventId, eventName, eventDate, eventLocation, eventDescription, organizerId));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return events;
+	}
+	
 	// SETTER AND GETTER
 	public String getEvent_id() {
 		return event_id;
