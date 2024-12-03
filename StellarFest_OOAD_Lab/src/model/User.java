@@ -25,6 +25,14 @@ public class User {
 		this.user_role = user_role;
 	}
 	
+	public User(String user_id, String user_email, String user_name, String user_role) {
+		super();
+		this.user_id = user_id;
+		this.user_email = user_email;
+		this.user_name = user_name;
+		this.user_role = user_role;
+	}
+	
 	public User() {
 		
 	}

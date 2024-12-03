@@ -311,7 +311,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		EventOrganizerView eventOrganizerView = new EventOrganizerView();
 		
 		try {
-			eventOrganizerView.setTempUserId(userId);
+			eventOrganizerView.setUserID(userId);
 			eventOrganizerView.start(s);
 		} catch (Exception e) {
 			e.printStackTrace();

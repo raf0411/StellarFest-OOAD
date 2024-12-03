@@ -1,5 +1,7 @@
 package model;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Vector;
 
 import database.Database;
@@ -11,6 +13,8 @@ public class Event {
 	private String event_location;
 	private String event_description;
 	private String organizer_id;
+	private Vector<Vendor> vendors;
+	private Vector<Guest> guests;
 	
 	private Database db = Database.getInstance();
 	
@@ -33,8 +37,8 @@ public class Event {
 		
 	}
 	
-	public void viewEventDetails(String eventID) {
-		
+	public Event viewEventDetails(String eventID) {
+		return null;
 	}
 	
 	public Vector<Event> viewAcceptedEvents(String email) {
@@ -96,6 +100,38 @@ public class Event {
 		return events;
 	}
 	
+	public Vector<Event> getAllEventOrganizerEvents(String userID){
+		Vector<Event> events = new Vector<Event>();
+		
+		String query = "SELECT * FROM events\r\n"
+					 + "WHERE organizer_id = ?";
+		
+		try {
+			PreparedStatement ps = db.prepareStatement(query);
+			ps.setString(1, userID);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+	            String eventId = rs.getString("event_id");
+	            String eventName = rs.getString("event_name");
+	            String eventDate = rs.getString("event_date");
+	            String eventLocation = rs.getString("event_location");
+	            String eventDescription = rs.getString("event_description");
+	            String organizerId = rs.getString("organizer_id");
+				
+				events.add(new Event(eventId, eventName, eventDate, eventLocation, eventDescription, organizerId));
+			}
+			
+			rs.close();
+			ps.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return events;
+	}
+	
 	// SETTER AND GETTER
 	public String getEvent_id() {
 		return event_id;
@@ -143,5 +179,21 @@ public class Event {
 	
 	public void setOrganizer_id(String organizer_id) {
 		this.organizer_id = organizer_id;
+	}
+	
+	public void setGuests(Vector<Guest> guests) {
+		this.guests = guests;
+	}
+	
+	public void setVendors(Vector<Vendor> vendors) {
+		this.vendors = vendors;
+	}
+
+	public Vector<Vendor> getVendors() {
+		return vendors;
+	}
+
+	public Vector<Guest> getGuests() {
+		return guests;
 	}
 }

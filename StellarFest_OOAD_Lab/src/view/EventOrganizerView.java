@@ -13,260 +13,191 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableSelectionModel;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Event;
 import model.Guest;
 import model.Vendor;
 
-public class EventOrganizerView extends Application{
+public class EventOrganizerView extends Application implements EventHandler<ActionEvent>{
 	private EventOrganizerController eventOrganizerController = new EventOrganizerController();
-	
-	private Scene scene;
-	private BorderPane bp, detailPage, vendorPage, guestPage, createEventPage, editEventPage;
-	private GridPane gp, detailContainer;
-	private HBox btnBox;
-	private FlowPane fp;
-	private TableView<Event> table;
-	private TableView<Vendor> vendorTable;
-	private TableView<Guest> guestTable;
-	private Label titleLbl, detailTitleLbl, eventIdLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescriptionLbl, eventAttendeesLbl;
-	private Label eventName, eventDate, eventLocation, eventDescription;
-	
+	private String userID;
 	private Vector<Event> events;
-	private String tempUserId;
-	private Button backBtn, addVendorBtn, addGuestBtn;
+	
+	Stage stage;
+	Scene scene;
+	BorderPane borderContainer;
+	GridPane eventDetailContainer;
+	VBox vb;
+	Menu navMenu;
+	MenuItem registerItem;
+	MenuItem loginItem;
+	MenuItem changeProfileItem;
+	MenuItem eventItem;
+	MenuBar navBar;
+	TableView<Event> eventTable;
+	Label eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, guestAttendeesLbl, vendorAttendeesLbl,
+		  eventName, eventDate, eventLocation, eventDesc, guestAttendees, vendorAttendees;
+	
 	
 	@Override
-	public void start(Stage s) throws Exception {
-		initAllOrganizedEvents();
-		arrangeOrganizedEvents();
-        
-		s.setTitle("Event Organizer");
-		s.setScene(scene);
-		s.show();
+	public void start(Stage stage) throws Exception {
+		init();
+		arrange();
 		
-		table.setOnMouseClicked(tableMouseEvent(s));
-	
-		backBtn.setOnAction(event -> {
-			initAllOrganizedEvents();
-			arrangeOrganizedEvents();
-			scene = new Scene(bp, 1280, 720);
-			s.setScene(scene);
-		});
+		this.stage = stage;
+		this.stage.setTitle("Event Organizer");
+		this.stage.setScene(scene);
+		this.stage.show();
+	}
+
+	@Override
+	public void handle(ActionEvent e) {
+		if(e.getSource() == eventItem) {
+			viewOrganizedEvents(userID);
+		}
 	}
 	
-	public void initOrganizedEventDetail() {
-		backBtn = new Button("Back");
-		detailContainer = new GridPane();
-		detailPage = new BorderPane();
-		detailTitleLbl = new Label("Event Detail");
-		eventIdLbl = new Label("Event ID ");
-		eventNameLbl = new Label("Event Name ");
-		eventDateLbl = new Label("Event Date ");
-		eventLocationLbl = new Label("Event Location:");
-		eventDescriptionLbl = new Label("Event Description ");
-		eventAttendeesLbl = new Label("Attendees ");
-	}
-	
-	public void initAllOrganizedEvents() {
-		backBtn = new Button("Back");
-		addVendorBtn = new Button("Add Vendor");
-		addGuestBtn = new Button("Add Guest");
-		bp = new BorderPane();
-		gp = new GridPane();
-		fp = new FlowPane();
-		scene = new Scene(bp, 1280, 720);
-		table = new TableView<>();
-		events = new Vector<Event>();
-		titleLbl = new Label("Organized Events");
-		btnBox = new HBox();
-		
-		TableColumn<Event, String> eventIdCol = new TableColumn("Event ID");
-		eventIdCol.setCellValueFactory(new PropertyValueFactory<>("event_id"));
-		eventIdCol.setMinWidth(100);
-		
-		TableColumn<Event, String> eventNameCol = new TableColumn("Event Name");
-		eventNameCol.setCellValueFactory(new PropertyValueFactory<>("event_name"));
-		eventNameCol.setMinWidth(300);
-		
-		TableColumn<Event, String> eventDateCol = new TableColumn("Event Date");
-		eventDateCol.setCellValueFactory(new PropertyValueFactory<>("event_date"));
-		eventDateCol.setMinWidth(300);
-		
-		TableColumn<Event, String> eventLocationCol = new TableColumn("Event Location");
-		eventLocationCol.setCellValueFactory(new PropertyValueFactory<>("event_location"));
-		eventLocationCol.setMinWidth(300);
-		
-		table.getColumns().addAll(eventIdCol, eventNameCol, eventDateCol, eventLocationCol);
-		
-		refreshTable();
-	}
-	
-	public void initVendor() {
-		
-	}
-	
-	public void arrangeOrganizedEvents() {
-		btnBox.getChildren().add(addVendorBtn);
-		btnBox.setMargin(addVendorBtn, new Insets(10, 10, 10 ,50));
-		
-		btnBox.getChildren().add(addGuestBtn);
-		btnBox.setMargin(addGuestBtn, new Insets(10, 10, 10 , 50));
-		
-		btnBox.setAlignment(Pos.CENTER);
-		
-		bp.setTop(table);
-		bp.setBottom(btnBox);
-	} 
-	
-	public void arrangeOrganizedEventDetail() {
-		detailPage.setPadding(new Insets(50));
-		
-		detailContainer.add(eventNameLbl, 0, 0);
-		detailContainer.add(eventName, 1, 0);
-		
-		detailContainer.add(eventDateLbl, 0, 1);
-		detailContainer.add(eventDate, 1, 1);
-		
-		detailContainer.add(eventLocationLbl, 0, 2);
-		detailContainer.add(eventLocation, 1, 2);
-		
-		detailContainer.add(eventDescriptionLbl, 0, 3);
-		detailContainer.add(eventDescription, 1, 3);
-		
-		detailContainer.add(eventAttendeesLbl, 0, 4);
-	
-		detailPage.setTop(detailTitleLbl);
-		detailPage.setCenter(detailContainer);
-		detailPage.setBottom(backBtn);
-		
-		// Top
-		detailTitleLbl.setAlignment(Pos.CENTER);
-		detailTitleLbl.setFont(new Font("Verdana", 24));
-		detailTitleLbl.setStyle("-fx-font-weight: bold;");
-		
-		// Center
-		detailContainer.setAlignment(Pos.CENTER);
-		detailContainer.setPadding(new Insets(50));
-		eventNameLbl.setMinWidth(100);
-		eventDateLbl.setMinWidth(100);
-		eventLocationLbl.setMinWidth(100);
-		eventDescriptionLbl.setMinWidth(100);
-		eventAttendeesLbl.setMinWidth(100);
-		eventDescription.setMinWidth(50);
-		
-		detailContainer.setVgap(20);
-		detailContainer.setHgap(20);
-		
-		eventNameLbl.setFont(new Font("Verdana", 16));
-		eventDateLbl.setFont(new Font("Verdana", 16));
-		eventLocationLbl.setFont(new Font("Verdana", 16));
-		eventDescriptionLbl.setFont(new Font("Verdana", 16));
-		eventAttendeesLbl.setFont(new Font("Verdana", 16));
-		
-		// Bottom
-		backBtn.setAlignment(Pos.CENTER);
-	}
-	
-	public EventHandler<MouseEvent> tableMouseEvent(Stage s) {
+	private EventHandler<MouseEvent> eventTableMouseEvent(){
 		return new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent event) {
-				TableSelectionModel<Event> tbm = table.getSelectionModel();
-				tbm.setSelectionMode(SelectionMode.SINGLE);
-				Event ev = tbm.getSelectedItem();
+			public void handle(MouseEvent e) {
+				TableSelectionModel<Event> eventTsm = eventTable.getSelectionModel();
+				eventTsm.setSelectionMode(SelectionMode.SINGLE);
+				Event selectedEvent = eventTsm.getSelectedItem();
 				
-			    if (ev == null) {
-			    	return;
-			    }
-			    
-			    eventName = new Label(ev.getEvent_name());
-			    eventDate = new Label(ev.getEvent_date());
-			    eventLocation = new Label(ev.getEvent_location());
-			    eventDescription = new Label(ev.getEvent_description());
-
-		        initOrganizedEventDetail();
-		        arrangeOrganizedEventDetail();
-		        
-		        scene = new Scene(detailPage, 1280, 720);
-		        		
-		        s.setScene(scene);
+				if(selectedEvent == null) {
+					return;
+				}
+				
+				viewOrganizedEventDetails(selectedEvent.getEvent_id());
+				
+				eventName.setText(selectedEvent.getEvent_name());
+				eventDate.setText(selectedEvent.getEvent_date());
+				eventLocation.setText(selectedEvent.getEvent_location());
+				eventDesc.setText(selectedEvent.getEvent_description());
 			}
 		};
 	}
 	
-	public void refreshTable() {
-		viewOrganizedEvents(getTempUserId());
-		ObservableList<Event> regObs = FXCollections.observableArrayList(events);
-		table.setItems(regObs);
-	}
-	
-	public void createEvent(String eventName, String date, String location, String description, String organizerID) {
+	public void init() {
+		eventDetailContainer = new GridPane();
+		guestAttendeesLbl = new Label("Guests: ");
+		guestAttendees = new Label();
+		vendorAttendeesLbl = new Label("Vendors: ");
+		vendorAttendees = new Label();
+		eventNameLbl = new Label("Event Name: ");
+		eventName = new Label();
+		eventDateLbl = new Label("Event Date: ");
+		eventDate = new Label();
+		eventLocationLbl = new Label("Event Location: ");
+		eventLocation = new Label();
+		eventDescLbl = new Label("Event Description: ");
+		eventDesc = new Label();
 		
+		events = new Vector<Event>();
+		stage = new Stage();
+		borderContainer = new BorderPane();
+		vb = new VBox();
+		scene = new Scene(borderContainer, 1280, 720);
+		
+		navMenu = new Menu("Menu");
+		registerItem = new MenuItem("Register");
+		registerItem.setOnAction(this);
+		loginItem = new MenuItem("Login");
+		loginItem.setOnAction(this);
+		changeProfileItem = new MenuItem("Change Profile");
+		changeProfileItem.setOnAction(this);
+		eventItem = new MenuItem("Event");
+		eventItem.setOnAction(this);
+		navBar = new MenuBar();
+		eventTable = new TableView<Event>();
+		
+		TableColumn<Event, String> eventIdCol = new TableColumn<Event, String>("Event ID");
+		eventIdCol.setCellValueFactory(new PropertyValueFactory<>("event_id"));
+		eventIdCol.prefWidthProperty().bind(eventTable.widthProperty().multiply(0.34));
+		
+		TableColumn<Event, String> eventNameCol = new TableColumn<Event, String>("Event Name");
+		eventNameCol.setCellValueFactory(new PropertyValueFactory<>("event_name"));
+		eventNameCol.prefWidthProperty().bind(eventTable.widthProperty().multiply(0.34));
+	
+		TableColumn<Event, String> eventDateCol = new TableColumn<Event, String>("Event Date");
+		eventDateCol.setCellValueFactory(new PropertyValueFactory<>("event_date"));
+		eventDateCol.prefWidthProperty().bind(eventTable.widthProperty().multiply(0.34));
+		
+		TableColumn<Event, String> eventLocationCol = new TableColumn<Event, String>("Event Location");
+		eventLocationCol.setCellValueFactory(new PropertyValueFactory<>("event_location"));
+		eventLocationCol.prefWidthProperty().bind(eventTable.widthProperty().multiply(0.34));
+	
+		eventTable.getColumns().addAll(eventIdCol, eventNameCol, eventDateCol, eventLocationCol);
+		eventTable.setOnMouseClicked(eventTableMouseEvent());
+	}
+
+	public void arrange() {
+		navMenu.getItems().add(registerItem);
+		navMenu.getItems().add(loginItem);
+		navMenu.getItems().add(changeProfileItem);
+		navMenu.getItems().add(eventItem);
+		navBar.getMenus().add(navMenu);
+		
+		eventDetailContainer.add(eventNameLbl, 0, 0);
+		eventDetailContainer.add(eventName, 1, 0);
+		
+		eventDetailContainer.add(eventDateLbl, 0, 2);
+		eventDetailContainer.add(eventDate, 1, 2);
+		
+		eventDetailContainer.add(eventLocationLbl, 0, 3);
+		eventDetailContainer.add(eventLocation, 1, 3);
+		
+		eventDetailContainer.add(eventDescLbl, 0, 4);
+		eventDetailContainer.add(eventDesc, 1, 4);
+		
+		eventDetailContainer.add(guestAttendeesLbl, 0, 5);
+		eventDetailContainer.add(guestAttendees, 1, 5);
+		
+		eventDetailContainer.add(vendorAttendeesLbl, 0, 6);
+		eventDetailContainer.add(vendorAttendees, 1, 6);
+		
+		eventDetailContainer.setAlignment(Pos.CENTER);
+		
+		borderContainer.setTop(navBar);
 	}
 	
 	public void viewOrganizedEvents(String userID) {
 		events.removeAllElements();
-		
-		if(events == null) {
-			events = new Vector<Event>();
-		}
-		
 		events = eventOrganizerController.viewOrganizedEvents(userID);
+		
+	    ObservableList<Event> eventRegObs = FXCollections.observableArrayList(events);
+	    eventTable.setItems(eventRegObs);
+	    
+	    borderContainer.setCenter(eventTable);
 	}
 	
 	public void viewOrganizedEventDetails(String eventID) {
+		Event tempEvent = eventOrganizerController.viewOrganizedEventDetails(eventID);
 		
-	}
-	
-	public void getGuests() {
+		guestAttendees.setText(tempEvent.getGuests().toString());
+		vendorAttendees.setText(tempEvent.getVendors().toString());
 		
-	}
-	
-	public void getVendors() {
-		
-	}
-	
-	public void getGuestsByTransactionID(String eventID) {
-		
-	}
-	
-	public void getVendorsByTransactionID(String eventID) {
-		
-	}
-	
-	public void checkCreateEventInput(String eventName, String date, String location, String description) {
-		
-	}
-	
-	public void checkAddVendorInput(String vendorID) {
-		
-	}
-	
-	public void checkAddGuestInput(String vendorID) {
-		
-	}
-	
-	public void editEventName(String eventID, String eventName) {
-		
+		borderContainer.setCenter(eventDetailContainer);
 	}
 
-	public String getTempUserId() {
-		return tempUserId;
-	}
-
-	public void setTempUserId(String tempUserId) {
-		this.tempUserId = tempUserId;
+	public void setUserID(String userID) {
+		this.userID = userID;
 	}
 }

@@ -9,28 +9,25 @@ import model.Vendor;
 
 public class EventOrganizerController {
 	private EventOrganizer eventOrganizer = new EventOrganizer();
-	public Guest guest = new Guest();
-	public Vendor vendor = new Vendor();
-	private Vector<Event> events;
+	private Event event = new Event();
+	private Guest guest = new Guest();
+	private Vendor vendor = new Vendor();
 	
 	public void createEvent(String eventName, String date, String location, String description, String organizerID) {
 		
 	}
 	
 	public Vector<Event> viewOrganizedEvents(String userID) {
-	    if (events == null) {
-	        events = new Vector<>();
-	    }
-	    
-		events = eventOrganizer.viewOrganizedEvents(userID);
+		Vector<Event> events = new Vector<Event>();
+		events = event.getAllEventOrganizerEvents(userID);
 	
 		return events;
 	}
 	
-	public void viewOrganizedEventDetails(String eventID) {
-		// Kasi lihat Vendors dan Guestsnya juga nanti
-		
-		
+	public Event viewOrganizedEventDetails(String eventID) {
+		Event detailEvent = eventOrganizer.viewOrganizedEventDetails(eventID);
+	
+		return detailEvent;
 	}
 	
 	public void getGuests() {

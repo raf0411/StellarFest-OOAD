@@ -10,7 +10,7 @@ import database.Database;
 public class EventOrganizer extends User{
 	private String events_created;
 	private Vector<Event> events;
-	private Database db;
+	private Database db = Database.getInstance();
 	
 	public EventOrganizer(String user_id, String user_email, String user_name, String user_password, String user_role) {
 		super(user_id, user_email, user_name, user_password, user_role);
@@ -52,8 +52,35 @@ public class EventOrganizer extends User{
 	    return events;
 	}
 	
-	public void viewOrganizedEventDetails(String eventID) {
+	public Event viewOrganizedEventDetails(String eventID) {
+		Event detailEvent = null;
 		
+        try {
+            String eventQuery = "SELECT * FROM events WHERE event_id = ?";
+            PreparedStatement psEvent = db.prepareStatement(eventQuery);
+            psEvent.setString(1, eventID);
+            ResultSet rsEvent = psEvent.executeQuery();
+
+            if (rsEvent.next()) {
+                String eventName = rsEvent.getString("event_name");
+                String eventDate = rsEvent.getString("event_date");
+                String eventLocation = rsEvent.getString("event_location");
+                String eventDescription = rsEvent.getString("event_description");
+                String organizerId = rsEvent.getString("organizer_id");
+
+                detailEvent = new Event(eventID, eventName, eventDate, eventLocation, eventDescription, organizerId);
+     
+                Vector<Vendor> vendors = Vendor.getVendorsByTransactionID(eventID);
+                Vector<Guest> guests = Guest.getGuestsByTransactionID(eventID);
+
+                detailEvent.setVendors(vendors);
+                detailEvent.setGuests(guests);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return detailEvent;
 	}
 	
 	public void getGuests() {
@@ -64,13 +91,13 @@ public class EventOrganizer extends User{
 		
 	}
 	
-	public void getGuestsByTransactionID(String eventID) {
-		
-	}
-	
-	public void getVendorsByTransactionID(String eventID) {
-		
-	}
+//	public static Vector<Guest> getGuestsByTransactionID(String eventID) {
+//		
+//	}
+//	
+//	public static Vector<Vendor> getVendorsByTransactionID(String eventID) {
+//		
+//	}
 	
 	public void checkCreateEventInput(String eventName, String date, String location, String description) {
 		
