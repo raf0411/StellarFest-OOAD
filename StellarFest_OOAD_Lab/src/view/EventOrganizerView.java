@@ -38,12 +38,14 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	private EventOrganizerController eventOrganizerController = new EventOrganizerController();
 	private String userID;
 	private Vector<Event> events;
+	private Vector<Vendor> vendors;
 	
 	Stage stage;
 	Scene scene;
 	BorderPane borderContainer;
 	GridPane eventDetailContainer;
 	VBox vb;
+	HBox hb;
 	Menu navMenu;
 	MenuItem registerItem;
 	MenuItem loginItem;
@@ -51,9 +53,10 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	MenuItem eventItem;
 	MenuBar navBar;
 	TableView<Event> eventTable;
+	TableView<Vendor> vendorTable;
 	Label eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, guestAttendeesLbl, vendorAttendeesLbl,
 		  eventName, eventDate, eventLocation, eventDesc, guestAttendees, vendorAttendees;
-	
+	Button addVendorBtn;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -70,7 +73,14 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	public void handle(ActionEvent e) {
 		if(e.getSource() == eventItem) {
 			viewOrganizedEvents(userID);
+		} else if(e.getSource() == addVendorBtn) {
+			viewAddVendors();
 		}
+	}
+	
+	private EventHandler<MouseEvent> vendorTableMouseEvent() {
+		
+		return null;
 	}
 	
 	private EventHandler<MouseEvent> eventTableMouseEvent(){
@@ -96,6 +106,8 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	}
 	
 	public void init() {
+		vendors = new Vector<Vendor>();
+		vendorTable = new TableView<Vendor>();
 		eventDetailContainer = new GridPane();
 		guestAttendeesLbl = new Label("Guests: ");
 		guestAttendees = new Label();
@@ -114,6 +126,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		stage = new Stage();
 		borderContainer = new BorderPane();
 		vb = new VBox();
+		hb = new HBox();
 		scene = new Scene(borderContainer, 1280, 720);
 		
 		navMenu = new Menu("Menu");
@@ -127,6 +140,9 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		eventItem.setOnAction(this);
 		navBar = new MenuBar();
 		eventTable = new TableView<Event>();
+		
+		addVendorBtn = new Button("Add Vendor");
+		addVendorBtn.setOnAction(this);
 		
 		TableColumn<Event, String> eventIdCol = new TableColumn<Event, String>("Event ID");
 		eventIdCol.setCellValueFactory(new PropertyValueFactory<>("event_id"));
@@ -143,9 +159,24 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		TableColumn<Event, String> eventLocationCol = new TableColumn<Event, String>("Event Location");
 		eventLocationCol.setCellValueFactory(new PropertyValueFactory<>("event_location"));
 		eventLocationCol.prefWidthProperty().bind(eventTable.widthProperty().multiply(0.34));
-	
+		
 		eventTable.getColumns().addAll(eventIdCol, eventNameCol, eventDateCol, eventLocationCol);
 		eventTable.setOnMouseClicked(eventTableMouseEvent());
+		
+		TableColumn<Vendor, String> vendorIdCol = new TableColumn<>("Vendor ID");
+		vendorIdCol.setCellValueFactory(new PropertyValueFactory<>("user_id"));
+		vendorIdCol.prefWidthProperty().bind(vendorTable.widthProperty().multiply(0.34));
+
+		TableColumn<Vendor, String> vendorNameCol = new TableColumn<>("Vendor Name");
+		vendorNameCol.setCellValueFactory(new PropertyValueFactory<>("user_name"));
+		vendorNameCol.prefWidthProperty().bind(vendorTable.widthProperty().multiply(0.34));
+
+		TableColumn<Vendor, String> vendorEmailCol = new TableColumn<>("Vendor Email");
+		vendorEmailCol.setCellValueFactory(new PropertyValueFactory<>("user_email"));
+		vendorEmailCol.prefWidthProperty().bind(vendorTable.widthProperty().multiply(0.34));
+
+		vendorTable.getColumns().addAll(vendorIdCol, vendorNameCol, vendorEmailCol);
+		vendorTable.setOnMouseClicked(vendorTableMouseEvent());
 	}
 
 	public void arrange() {
@@ -175,7 +206,11 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		
 		eventDetailContainer.setAlignment(Pos.CENTER);
 		
+		hb.getChildren().add(addVendorBtn);
+		hb.setAlignment(Pos.CENTER);
+		
 		borderContainer.setTop(navBar);
+		borderContainer.setBottom(hb);
 	}
 	
 	public void viewOrganizedEvents(String userID) {
@@ -195,6 +230,16 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		vendorAttendees.setText(tempEvent.getVendors().toString());
 		
 		borderContainer.setCenter(eventDetailContainer);
+	}
+	
+	public void viewAddVendors() {
+		vendors.removeAllElements();
+		vendors = eventOrganizerController.getVendors();
+		
+	    ObservableList<Vendor> vendorRegObs = FXCollections.observableArrayList(vendors);
+	    vendorTable.setItems(vendorRegObs);
+	    
+	    borderContainer.setCenter(vendorTable);
 	}
 
 	public void setUserID(String userID) {

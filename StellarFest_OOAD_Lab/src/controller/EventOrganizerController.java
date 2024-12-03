@@ -34,17 +34,19 @@ public class EventOrganizerController {
 		
 	}
 	
-	public void getVendors() {
+	public Vector<Vendor> getVendors() {
+		Vector<Vendor> vendors = vendor.getVendors();
 		
+		return vendors;
 	}
 	
-	public void getGuestsByTransactionID(String eventID) {
-		
-	}
-	
-	public void getVendorsByTransactionID(String eventID) {
-		
-	}
+//	public void getGuestsByTransactionID(String eventID) {
+//		
+//	}
+//	
+//	public void getVendorsByTransactionID(String eventID) {
+//		
+//	}
 	
 	public void checkCreateEventInput(String eventName, String date, String location, String description) {
 		

@@ -15,16 +15,13 @@ public class Vendor extends User{
 
 	public Vendor(String user_id, String user_email, String user_name, String user_password, String user_role) {
 		super(user_id, user_email, user_name, user_password, user_role);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public Vendor(String user_id, String user_email, String user_name, String user_role) {
 		super(user_id, user_email, user_name, user_role);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public Vendor() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public void acceptInvitation(String eventID) {
@@ -76,5 +73,29 @@ public class Vendor extends User{
 	        }
 	        
 	   return vendors;
+	}
+	
+	public Vector<Vendor> getVendors(){
+		Vector<Vendor> vendors = new Vector<Vendor>();
+		
+        try {
+        	String query = "SELECT * FROM users WHERE user_role = 'Vendor'";
+            
+            PreparedStatement ps = db.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String userId = rs.getString("user_id");
+                String email = rs.getString("user_email");
+                String name = rs.getString("user_name");
+                String role = rs.getString("user_role");
+
+                vendors.add(new Vendor(userId, email, name, role));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+		
+		return vendors;
 	}
 }
