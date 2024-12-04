@@ -60,7 +60,19 @@ public class EventOrganizerController {
 		
 	}
 	
-	public void editEventName(String eventID, String eventName) {
+	public Boolean checkEditEventName(String eventName, String eventNameBefore) {
+		if(eventName.isEmpty()) {
+			return false;
+		} else if(eventName.equals(eventNameBefore)) {
+			return false;
+		}
 		
+		return true;
+	}
+	
+	public String editEventName(String eventID, String eventName) {
+		String message = event.editEventName(eventID, eventName);
+		
+		return message;
 	}
 }

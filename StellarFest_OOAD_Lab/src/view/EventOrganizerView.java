@@ -20,6 +20,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableSelectionModel;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
@@ -28,6 +29,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Event;
@@ -39,14 +41,17 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	private String userID;
 	private Vector<Event> events;
 	private Vector<Vendor> vendors;
+	private String tempEventID;
+	private String tempEventName;
+	private String message;
 	
 	Stage stage;
 	Scene scene;
 	BorderPane borderContainer;
-	GridPane eventDetailContainer;
-	VBox vb;
-	HBox hb;
+	GridPane eventDetailContainer, editEventForm;
+	VBox vb, btnEditDetailVB;
 	Menu navMenu;
+	Menu profileMenu;
 	MenuItem registerItem;
 	MenuItem loginItem;
 	MenuItem changeProfileItem;
@@ -55,8 +60,9 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	TableView<Event> eventTable;
 	TableView<Vendor> vendorTable;
 	Label eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, guestAttendeesLbl, vendorAttendeesLbl,
-		  eventName, eventDate, eventLocation, eventDesc, guestAttendees, vendorAttendees;
-	Button addVendorBtn;
+		  eventName, eventDate, eventLocation, eventDesc, guestAttendees, vendorAttendees, messageLbl;
+	Button addVendorBtn, editEventBtn, confirmEditBtn;
+	TextField eventNameTF;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -75,6 +81,11 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 			viewOrganizedEvents(userID);
 		} else if(e.getSource() == addVendorBtn) {
 			viewAddVendors();
+		} else if(e.getSource() == editEventBtn) {
+			viewEditForm();
+		} else if(e.getSource() == confirmEditBtn) {
+			
+			editEventName(tempEventID, tempEventName);
 		}
 	}
 	
@@ -97,6 +108,8 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 				
 				viewOrganizedEventDetails(selectedEvent.getEvent_id());
 				
+				tempEventID = selectedEvent.getEvent_id();
+				tempEventName = selectedEvent.getEvent_name();
 				eventName.setText(selectedEvent.getEvent_name());
 				eventDate.setText(selectedEvent.getEvent_date());
 				eventLocation.setText(selectedEvent.getEvent_location());
@@ -106,8 +119,10 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	}
 	
 	public void init() {
+		btnEditDetailVB = new VBox();
 		vendors = new Vector<Vendor>();
 		vendorTable = new TableView<Vendor>();
+		editEventForm = new GridPane();
 		eventDetailContainer = new GridPane();
 		guestAttendeesLbl = new Label("Guests: ");
 		guestAttendees = new Label();
@@ -121,15 +136,22 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		eventLocation = new Label();
 		eventDescLbl = new Label("Event Description: ");
 		eventDesc = new Label();
+		editEventBtn = new Button("Edit Event Name");
+		editEventBtn.setOnAction(this);
+		eventNameTF = new TextField();
+		confirmEditBtn = new Button("Confirm");
+		confirmEditBtn.setOnAction(this);
+		messageLbl = new Label();
 		
 		events = new Vector<Event>();
 		stage = new Stage();
 		borderContainer = new BorderPane();
 		vb = new VBox();
-		hb = new HBox();
+	
 		scene = new Scene(borderContainer, 1280, 720);
 		
 		navMenu = new Menu("Menu");
+		profileMenu = new Menu("Profile");
 		registerItem = new MenuItem("Register");
 		registerItem.setOnAction(this);
 		loginItem = new MenuItem("Login");
@@ -180,11 +202,12 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	}
 
 	public void arrange() {
-		navMenu.getItems().add(registerItem);
-		navMenu.getItems().add(loginItem);
-		navMenu.getItems().add(changeProfileItem);
 		navMenu.getItems().add(eventItem);
+		profileMenu.getItems().add(registerItem);
+		profileMenu.getItems().add(loginItem);
+		profileMenu.getItems().add(changeProfileItem);
 		navBar.getMenus().add(navMenu);
+		navBar.getMenus().add(profileMenu);
 		
 		eventDetailContainer.add(eventNameLbl, 0, 0);
 		eventDetailContainer.add(eventName, 1, 0);
@@ -206,11 +229,17 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		
 		eventDetailContainer.setAlignment(Pos.CENTER);
 		
-		hb.getChildren().add(addVendorBtn);
-		hb.setAlignment(Pos.CENTER);
+		editEventForm.add(eventNameLbl, 0, 0);
+		editEventForm.add(eventNameTF, 1, 0);
+		
+		editEventForm.setAlignment(Pos.CENTER);
+		
+		btnEditDetailVB.getChildren().clear();
+		btnEditDetailVB.getChildren().add(addVendorBtn);
+		btnEditDetailVB.setAlignment(Pos.CENTER);
 		
 		borderContainer.setTop(navBar);
-		borderContainer.setBottom(hb);
+		borderContainer.setBottom(btnEditDetailVB);
 	}
 	
 	public void viewOrganizedEvents(String userID) {
@@ -229,7 +258,11 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		guestAttendees.setText(tempEvent.getGuests().toString());
 		vendorAttendees.setText(tempEvent.getVendors().toString());
 		
+		btnEditDetailVB.getChildren().clear();
+		btnEditDetailVB.getChildren().add(editEventBtn);
+		
 		borderContainer.setCenter(eventDetailContainer);
+		borderContainer.setBottom(btnEditDetailVB);
 	}
 	
 	public void viewAddVendors() {
@@ -240,6 +273,30 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	    vendorTable.setItems(vendorRegObs);
 	    
 	    borderContainer.setCenter(vendorTable);
+	}
+	
+	public void viewEditForm() {
+		message = "";
+		btnEditDetailVB.getChildren().clear();
+		btnEditDetailVB.getChildren().add(messageLbl);
+		btnEditDetailVB.getChildren().add(confirmEditBtn);
+		
+		borderContainer.setCenter(editEventForm);
+		borderContainer.setBottom(btnEditDetailVB);
+	}
+	
+	public void editEventName(String eventID, String eventName) {
+		String newEventName = eventNameTF.getText();
+
+		if(eventOrganizerController.checkEditEventName(newEventName, tempEventName)) {
+			message = eventOrganizerController.editEventName(eventID, newEventName);
+			messageLbl.setTextFill(Color.GREEN);
+			messageLbl.setText(message);
+		} else {
+			message = "Input is invalid!";
+			messageLbl.setTextFill(Color.RED);
+			messageLbl.setText(message);
+		}
 	}
 
 	public void setUserID(String userID) {

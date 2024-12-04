@@ -2,6 +2,7 @@ package model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
 
 import database.Database;
@@ -130,6 +131,27 @@ public class Event {
 		}
 		
 		return events;
+	}
+	
+	public String editEventName(String eventID, String eventName) {
+		String query = "UPDATE events\r\n"
+					 + "SET event_name = ?\r\n"
+					 + "WHERE event_id = ?";
+		
+		PreparedStatement ps = db.prepareStatement(query);
+		
+		try {
+			ps.setString(1, eventName);
+			ps.setString(2, eventID);
+			
+			ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		String message = "Edit Successful!";
+
+		return message;
 	}
 	
 	// SETTER AND GETTER
