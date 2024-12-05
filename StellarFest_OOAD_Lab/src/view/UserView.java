@@ -248,24 +248,32 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 	}
 	
 	private void loginUser() {
-		String message;
-		String email = emailTF.getText();
-		String password = passwordPF.getText();
-		String role = userController.getUserByEmail(email).getUser_role();
-		String userId = userController.getUserByEmail(email).getUser_id();
-		
-		if(userController.login(email, password)) {
-			message = "Login Successful! Redirecting...";
-			infoLbl.setTextFill(Color.GREEN);
-			
-			authUser(role, userId, email);
-		} else {
-			message = "Login Failed! Please input correct details.";
-			infoLbl.setTextFill(Color.RED);
-		}
-		
-		infoLbl.setText(message);
+	    String message;
+	    String email = emailTF.getText();
+	    String password = passwordPF.getText();
+
+	    if (email.isEmpty() || password.isEmpty()) {
+	        message = "Email and Password cannot be empty!";
+	        infoLbl.setTextFill(Color.RED);
+	        infoLbl.setText(message);
+	        return;
+	    }
+
+	    String role = userController.getUserByEmail(email).getUser_role();
+	    String userId = userController.getUserByEmail(email).getUser_id();
+	    
+	    if (userController.login(email, password)) {
+	        message = "Login Successful! Redirecting...";
+	        infoLbl.setTextFill(Color.GREEN);
+	        authUser(role, userId, email);
+	    } else {
+	        message = "Login Failed! Please input correct details.";
+	        infoLbl.setTextFill(Color.RED);
+	    }
+	    
+	    infoLbl.setText(message);
 	}
+
 	
 	// Auth Role Based
 	public void authUser(String userRole, String userId, String email) {

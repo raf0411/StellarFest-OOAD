@@ -13,10 +13,6 @@ public class EventOrganizerController {
 	private Guest guest = new Guest();
 	private Vendor vendor = new Vendor();
 	
-	public void createEvent(String eventName, String date, String location, String description, String organizerID) {
-		
-	}
-	
 	public Vector<Event> viewOrganizedEvents(String userID) {
 		Vector<Event> events = new Vector<Event>();
 		events = event.getAllEventOrganizerEvents(userID);

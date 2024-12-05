@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 import database.Database;
+import util.RandomIDGenerator;
 
 public class Event {
 	private String event_id;
@@ -35,7 +36,24 @@ public class Event {
 	}
 	
 	public void createEvent(String eventName, String date, String location, String description, String organizerID) {
+		String eventID = RandomIDGenerator.generateUniqueID();
+		String query = "INSERT INTO events\r\n" +
+				   	   "VALUES (?, ?, ?, ?, ?, ?)";
 		
+		PreparedStatement ps = db.prepareStatement(query);
+		
+		try {
+			ps.setString(1, eventID);
+			ps.setString(2, eventName);
+			ps.setString(3, date);
+			ps.setString(4, location);
+			ps.setString(5, description);
+			ps.setString(6, organizerID);
+			
+			ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Event viewEventDetails(String eventID) {
