@@ -234,47 +234,29 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		String email = emailTF.getText();
 		String role = rolesCB.getSelectionModel().getSelectedItem();
 		
-		if(userController.checkRegisterInput(email, username, password, role)) {
-			userController.register(email, username, password, role);
-			message = "Register Successful! Please login now.";
-			infoLbl.setTextFill(Color.GREEN);
-			
-		} else {
-			message = "Register Failed! Please input valid details.";
-			infoLbl.setTextFill(Color.RED);
-		}
+		message = userController.register(email, username, password, role);
 		
 		infoLbl.setText(message);
 	}
 	
 	private void loginUser() {
-	    String message;
+	    
 	    String email = emailTF.getText();
 	    String password = passwordPF.getText();
-
-	    if (email.isEmpty() || password.isEmpty()) {
-	        message = "Email and Password cannot be empty!";
-	        infoLbl.setTextFill(Color.RED);
-	        infoLbl.setText(message);
-	        return;
-	    }
-
-	    String role = userController.getUserByEmail(email).getUser_role();
-	    String userId = userController.getUserByEmail(email).getUser_id();
+	    String role = "";
+	    String userId = "";
+	    String message = "";
 	    
-	    if (userController.login(email, password)) {
-	        message = "Login Successful! Redirecting...";
-	        infoLbl.setTextFill(Color.GREEN);
-	        authUser(role, userId, email);
-	    } else {
-	        message = "Login Failed! Please input correct details.";
-	        infoLbl.setTextFill(Color.RED);
-	    }
-	    
+	    message = userController.login(email, password);
 	    infoLbl.setText(message);
+	    
+	    if(message.equals("Login Successful!")) {
+		    role = userController.getUserByEmail(email).getUser_role();
+		    userId = userController.getUserByEmail(email).getUser_id();
+	        authUser(role, userId, email);
+	    }
 	}
 
-	
 	// Auth Role Based
 	public void authUser(String userRole, String userId, String email) {
 		switch(userRole) {

@@ -54,9 +54,8 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 		  eventName, eventDate, eventLocation, eventDesc,
 		  productNameLbl, productDescLbl, manageVendorTitle;
     VBox invitationBottomBox, eventBottomBox, eventDetailBox, manageVendorBox;
-	Menu navMenu;
-	MenuItem invitationNav;
-	MenuItem eventNav;
+	Menu navMenu, profileMenu;
+	MenuItem registerNav, loginNav, changeProfileNav, eventNav, invitationNav;
 	MenuBar navBar;
 	
 	@Override
@@ -134,6 +133,13 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	}
 	
 	public void init() {
+		profileMenu = new Menu("Profile");
+		registerNav = new MenuItem("Register");
+		registerNav.setOnAction(this);
+		loginNav = new MenuItem("Login");
+		loginNav.setOnAction(this);
+		changeProfileNav = new MenuItem("Change Profile");
+		changeProfileNav.setOnAction(this);
 		borderContainer = new BorderPane();
 		scene = new Scene(borderContainer, 1280, 720);
 		navMenu = new Menu("Menu");
@@ -274,8 +280,12 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	public void arrangeComponent() {
 		navMenu.getItems().add(invitationNav);
 		navMenu.getItems().add(eventNav);
+		profileMenu.getItems().add(registerNav);
+		profileMenu.getItems().add(loginNav);
+		profileMenu.getItems().add(changeProfileNav);
 		
 		navBar.getMenus().add(navMenu);
+		navBar.getMenus().add(profileMenu);
 		
 		borderContainer.setTop(navBar);
 	}

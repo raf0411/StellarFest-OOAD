@@ -121,14 +121,6 @@ public class User {
 	    return user;
 	}
 	
-	public void checkRegisterInput(String email, String name, String password) {
-		
-	}
-	
-	public void checkChangeProfileInput(String email, String name, String oldPassword, String newPassword) {
-		
-	}
-	
 	//SETTER AND GETTER
 	public String getUser_id() {
 		return user_id;

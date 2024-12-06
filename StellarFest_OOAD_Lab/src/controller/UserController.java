@@ -5,16 +5,45 @@ import model.User;
 public class UserController {
 	private User user = new User();
 	
-	public void register(String email, String name, String password, String role) {
-		user.register(email, name, password, role);
+	public String register(String email, String name, String password, String role) {
+		String message = "";
+		
+		if(getUserByEmail(email) != null) {
+			message = "User email already exists!";
+			return message;
+		} else if(getUserByUsername(name) != null) {
+			message = "User username already exists!";
+			return message;
+		} else {
+			message = checkRegisterInput(email, name, password, role);
+		}
+		
+		if(!message.equals("Registration Successful!")) {
+			return message;
+		} else {
+			user.register(email, name, password, role);
+			return message;
+		}
 	}
 	
-	public Boolean login(String email, String password) {
-		// Validate Login
-		if(!email.isEmpty() && !password.isEmpty() && user.login(email, password)) {
-			return true;
+	public String login(String email, String password) {
+		String message = "";
+		
+		if(email.isEmpty()){
+			message = "Email cannot be empty!";
+			return message;
+		} else if(password.isEmpty()) {
+			message = "Password cannot be empty!";
+			return message;
+		} else if(getUserByEmail(email) == null) {
+			message = "Email is not registered!";
+			return message;
+		} else if(!getUserByEmail(email).getUser_password().equals(password)) {
+			message = "Password is incorrect!";
+			return message;
 		} else {
-			return false;
+			message = "Login Successful!";
+			return message;
 		}
 	}
 	
@@ -40,19 +69,28 @@ public class UserController {
 		return null;
 	}
 	
-	public Boolean checkRegisterInput(String email, String name, String password, String role) {
-		// Validate Registration
-		if(email.isEmpty() || getUserByEmail(email) != null) {
-			return false;
-		} else if(name.isEmpty() || getUserByUsername(name) != null) {
-			return false;
-		} else if(password.isEmpty() || password.length() < 5) {
-			return false;
-		} else if(role.isEmpty()) {
-			return false;
-		}
+	public String checkRegisterInput(String email, String name, String password, String role) {
+		String message = "";
 		
-		return true;
+		if(email.isEmpty()) {
+			message = "Email cannot be empty!";
+			return message;
+		} else if(name.isEmpty()) {
+			message = "Username cannot be empty!";
+			return message;
+		} else if(password.isEmpty()) {
+			message = "Password cannot be empty!";
+			return message;
+		} else if(password.length() < 5) {
+			message = "Password must at least be 5 characters long!";
+			return message;
+		} else if(role.isEmpty()) {
+			message = "Role must pick using ComboBox!";
+			return message;
+		} else {
+			message = "Registration Successful!";
+			return message;
+		}
 	}
 	
 	public void checkChangeProfileInput(String email, String name, String oldPassword, String newPassword) {

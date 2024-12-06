@@ -43,10 +43,9 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	private String eventId;
 	private String message;
 	
-	Menu navMenu;
-	MenuItem invitationNav;
-	MenuItem eventNav;
-	MenuItem manageVendorNav;
+	Menu navMenu, profileMenu;
+	MenuItem invitationNav, eventNav, manageVendorNav,
+			 registerNav, loginNav, changeProfileNav;
 	MenuBar navBar;
 	
 	Scene scene;
@@ -152,13 +151,14 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		eventNav.setOnAction(this);
 		manageVendorNav = new MenuItem("Manage Vendor");
 		manageVendorNav.setOnAction(this);
+        profileMenu = new Menu("Profile");
+        registerNav = new MenuItem("Register");
+        registerNav.setOnAction(this);
+        loginNav = new MenuItem("Login");
+        loginNav.setOnAction(this);
+        changeProfileNav = new MenuItem("Change Profile");
+        changeProfileNav.setOnAction(this);
 		navBar = new MenuBar();
-		
-		navMenu.getItems().add(invitationNav);
-		navMenu.getItems().add(eventNav);
-		navMenu.getItems().add(manageVendorNav);
-		
-		navBar.getMenus().add(navMenu);
 		
 		borderContainer = new BorderPane();
 		eventDetailContainer = new GridPane();
@@ -280,6 +280,16 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	}
 	
 	public void arrangeComponent() {
+		navMenu.getItems().add(invitationNav);
+		navMenu.getItems().add(eventNav);
+		navMenu.getItems().add(manageVendorNav);
+		profileMenu.getItems().add(registerNav);
+		profileMenu.getItems().add(loginNav);
+		profileMenu.getItems().add(changeProfileNav);
+		
+		navBar.getMenus().add(navMenu);
+		navBar.getMenus().add(profileMenu);
+		
 	    invitationBottomBox.getChildren().add(messageLbl);
 	    invitationBottomBox.getChildren().add(acceptBtn);
 	    invitationBottomBox.setAlignment(Pos.CENTER);
@@ -296,7 +306,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	    eventDateLbl.setFont(new Font("Verdana", 16));
 	    eventDateLbl.setStyle("-fx-font-weight: bold");
 	    
-	    eventLocationLbl.setFont(new Font("Verdana", 6));
+	    eventLocationLbl.setFont(new Font("Verdana", 16));
 	    eventLocationLbl.setStyle("-fx-font-weight: bold");
 	    
 	    eventDescLbl.setFont(new Font("Verdana", 16));
