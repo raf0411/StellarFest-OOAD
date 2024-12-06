@@ -49,10 +49,22 @@ public class User {
 			user = new Guest(userID, email, name, password, role);
 		}
 		
-		String query = "INSERT INTO users " +
-				   	   "VALUES ('"+ userID +"', '"+ email +"', '"+ name +"', '"+ password +"', '"+ role +"')";
+		String query = "INSERT INTO users\r\n" 
+		             + "VALUES (?, ?, ?, ?, ?)";
 	
-		db.execUpdate(query);
+		PreparedStatement ps = db.prepareStatement(query);
+		
+		try {
+			ps.setString(1, userID);
+			ps.setString(2, email);
+			ps.setString(3, name);
+			ps.setString(4, password);
+			ps.setString(5, role);
+			
+			ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Boolean login(String email, String password) {
@@ -65,9 +77,45 @@ public class User {
 		}
 	}
 	
-	public void changeProfile(String email, String name, String oldPassword, String newPassword) {
-		
+	public void changeProfile(String userID, String email, String name, String oldPassword, String newPassword) {
+	    StringBuilder query = new StringBuilder("UPDATE users SET ");
+	    boolean first = true;
+
+	    if (!name.isEmpty()) {
+	        query.append("user_name = ?");
+	        first = false;
+	    }
+	    if (!email.isEmpty()) {
+	        if (!first) query.append(", ");
+	        query.append("user_email = ?");
+	        first = false;
+	    }
+	    if (!newPassword.isEmpty()) {
+	        if (!first) query.append(", ");
+	        query.append("user_password = ?");
+	    }
+	    query.append(" WHERE user_id = ?");
+
+	    try (PreparedStatement ps = db.prepareStatement(query.toString())) {
+	        int index = 1;
+
+	        if (!name.isEmpty()) {
+	            ps.setString(index++, name);
+	        }
+	        if (!email.isEmpty()) {
+	            ps.setString(index++, email);
+	        }
+	        if (!newPassword.isEmpty()) {
+	            ps.setString(index++, newPassword);
+	        }
+	        ps.setString(index, userID);
+
+	        ps.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	}
+
 	
 	public User getUserByEmail(String email) {
 	    User user = null;

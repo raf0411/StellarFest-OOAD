@@ -42,6 +42,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	private String userId;
 	private String eventId;
 	private String message;
+	private String oldPassword;
 	
 	Menu navMenu, profileMenu;
 	MenuItem invitationNav, eventNav, manageVendorNav,
@@ -62,6 +63,14 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
     VBox invitationBottomBox, eventBottomBox, eventDetailBox, manageVendorBox;
     TextField productNameTF, productDescTF;
     
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
+
 	@Override
 	public void start(Stage s) throws Exception {
 		init();

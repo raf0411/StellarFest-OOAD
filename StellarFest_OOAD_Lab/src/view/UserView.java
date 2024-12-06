@@ -253,21 +253,21 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 	    if(message.equals("Login Successful!")) {
 		    role = userController.getUserByEmail(email).getUser_role();
 		    userId = userController.getUserByEmail(email).getUser_id();
-	        authUser(role, userId, email);
+	        authUser(role, userId, email, password);
 	    }
 	}
 
 	// Auth Role Based
-	public void authUser(String userRole, String userId, String email) {
+	public void authUser(String userRole, String userId, String email, String password) {
 		switch(userRole) {
 			case "Event Organizer":
-				switchToEventOrganizerView(stage, userId);
+				switchToEventOrganizerView(stage, userId, email, password);
 				break;
 			case "Vendor":
-				switchToVendorView(stage, email, userId);
+				switchToVendorView(stage, email, userId, password);
 				break;
 			case "Guest":
-				switchToGuestView(stage, email, userId);
+				switchToGuestView(stage, email, userId, password);
 				break;
 			case "Admin":
 				switchToAdminView(stage);
@@ -297,10 +297,12 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
         s.setScene(scene);
 	}
 	
-	private void switchToEventOrganizerView(Stage s, String userId) {
+	private void switchToEventOrganizerView(Stage s, String userId, String email, String password) {
 		EventOrganizerView eventOrganizerView = new EventOrganizerView();
 		
 		try {
+			eventOrganizerView.setOldPassword(password);
+			eventOrganizerView.setEmail(email);
 			eventOrganizerView.setUserID(userId);
 			eventOrganizerView.start(s);
 		} catch (Exception e) {
@@ -308,10 +310,11 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		}
 	}
 	
-	private void switchToVendorView(Stage s, String email, String id) {
+	private void switchToVendorView(Stage s, String email, String id, String password) {
 		VendorView vendorView = new VendorView();
 		
 		try {
+			vendorView.setOldPassword(password);
 			vendorView.setUserId(id);
 			vendorView.setEmail(email);
 			vendorView.start(s);
@@ -320,10 +323,11 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		}
 	}
 	
-	private void switchToGuestView(Stage s, String id, String email) {
+	private void switchToGuestView(Stage s, String id, String email, String password) {
 		GuestView guestView = new GuestView();
 		
 		try {
+			guestView.setOldPassword(password);
 			guestView.setUserID(id);
 			guestView.setEmail(email);
 			guestView.start(s);

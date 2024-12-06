@@ -48,6 +48,8 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	private String tempEventID;
 	private String tempEventName;
 	private String message;
+	private String email;
+	private String oldPassword;
 	
 	Stage stage;
 	Scene scene;
@@ -65,6 +67,14 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	TextField eventNameTF, eventLocationTF, eventDescTF;
 	DatePicker eventDateDP;
 	
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
+
 	@Override
 	public void start(Stage stage) throws Exception {
 		init();
@@ -91,12 +101,30 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 			viewCreateEventForm();
 		} else if(e.getSource() == saveEventBtn) {
 			createEvent();
+		} else if(e.getSource() == changeProfileItem) {
+	        ChangeProfileView changeProfileView = new ChangeProfileView();
+	        
+	        try {
+	        	changeProfileView.setOldPassword(oldPassword);
+	        	changeProfileView.setEmail(email);
+	        	changeProfileView.setOldEmail(email);
+	        	changeProfileView.setRole("Event Organizer");
+	            changeProfileView.start(this.stage);
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+		} else if(e.getSource() == loginItem || e.getSource() == registerItem) {
+			UserView userView = new UserView();
 			
+			try {
+				userView.start(this.stage);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	
-	private EventHandler<MouseEvent> vendorTableMouseEvent() {
-		
+	private EventHandler<MouseEvent> vendorTableMouseEvent() {		
 		return null;
 	}
 	
@@ -372,5 +400,13 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 
 	public void setUserID(String userID) {
 		this.userID = userID;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

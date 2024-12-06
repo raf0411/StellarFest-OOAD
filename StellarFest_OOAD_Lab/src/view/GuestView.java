@@ -40,6 +40,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	private String userID;
 	private String eventId;
 	private String message;
+	private String oldPassword;
 	
 	Stage s;
 	Scene scene;
@@ -58,6 +59,14 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	MenuItem registerNav, loginNav, changeProfileNav, eventNav, invitationNav;
 	MenuBar navBar;
 	
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
+
 	@Override
 	public void start(Stage s) throws Exception {
 		init();

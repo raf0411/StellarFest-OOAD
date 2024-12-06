@@ -4,16 +4,22 @@ import controller.UserController;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class ChangeProfileView extends Application implements EventHandler<ActionEvent>{
 	private UserController userController = new UserController();
+	private String role;
+	private String email;
+	private String oldPassword;
+	private String oldEmail;
 	
 	Stage stage;
 	Scene scene;
@@ -22,8 +28,9 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 	TextField newNameTF;
 	TextField newEmailTF;
 	TextField newPasswordTF;
-	Button submitBtn;
-	Label messageLbl;
+	Button submitBtn, backBtn;
+	VBox vb;
+	Label messageLbl, newNameLbl, newEmailLbl, newPasswordLbl;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -34,12 +41,39 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		this.stage.setScene(scene);
 		this.stage.setTitle("Change Profile");
 		this.stage.show();
+		
+		backBtn.setOnAction(event -> {
+		    EventOrganizerView eventOrganizerView = new EventOrganizerView();
+		    GuestView guestView = new GuestView();
+		    VendorView vendorView = new VendorView();
+		    
+		    try {
+		    	if(getRole().equals("Event Organizer")) {
+		    		eventOrganizerView.start(this.stage);
+		    	} else if(getRole().equals("Guest")) {
+		    		guestView.start(this.stage);
+		    	} else if(getRole().equals("Vendor")) {
+		    		vendorView.start(this.stage);
+		    	}
+		        
+		    } catch (Exception ex) {
+		        ex.printStackTrace();
+		    }
+		});
 	}
 
 	@Override
-	public void handle(ActionEvent event) {
-		// TODO Auto-generated method stub
-		
+	public void handle(ActionEvent e) {
+		if(e.getSource() == submitBtn) {
+			String email = newEmailTF.getText();
+			String name = newNameTF.getText();
+			String password = newPasswordTF.getText();
+			String message = "";
+			
+			message = changeProfile(getOldEmail(), email, name, getOldPassword(), password);
+			
+			messageLbl.setText(message);
+		}
 	}
 	
 	public void init() {
@@ -50,12 +84,74 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		newEmailTF = new TextField();
 		newPasswordTF = new TextField();
 		submitBtn = new Button("Submit");
+		submitBtn.setOnAction(this);
+		backBtn = new Button("Back");
 		messageLbl = new Label();
+		newNameLbl = new Label("New Name: ");
+		newEmailLbl = new Label("New Email: ");
+		newPasswordLbl = new Label("New Password: ");
+		vb = new VBox();
 		
 		scene = new Scene(borderContainer, 1280, 720);
 	}
 	
 	public void arrange() {
-		
+	    changeProfileForm.add(newNameLbl, 0, 0);
+	    changeProfileForm.add(newNameTF, 1, 0);
+	    changeProfileForm.add(newEmailLbl, 0, 1);
+	    changeProfileForm.add(newEmailTF, 1, 1);
+	    changeProfileForm.add(newPasswordLbl, 0, 2);
+	    changeProfileForm.add(newPasswordTF, 1, 2);
+	    
+	    changeProfileForm.setAlignment(Pos.CENTER);
+	    
+	    vb.getChildren().add(messageLbl);
+	    vb.getChildren().add(submitBtn);
+	    vb.getChildren().add(backBtn);
+	    
+	    vb.setAlignment(Pos.CENTER);
+
+	    changeProfileForm.setHgap(10);
+	    changeProfileForm.setVgap(10);
+	    
+	    borderContainer.setCenter(changeProfileForm);
+	    borderContainer.setBottom(vb);
+	}
+	
+	public String changeProfile(String oldEmail, String email, String name, String oldPassword, String newPassword) {
+		String message = userController.changeProfile(oldEmail, email, name, oldPassword, newPassword);
+		return message;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
+
+	public String getOldEmail() {
+		return oldEmail;
+	}
+
+	public void setOldEmail(String oldEmail) {
+		this.oldEmail = oldEmail;
 	}
 }
