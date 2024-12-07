@@ -47,8 +47,8 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	TableColumn<Event, String> eventOrganizerCol;
 	Vector<Event> events;
 	Vector<User> users;
-	Menu navMenu;
-	MenuItem eventItem, userItem;
+	Menu navMenu, profileMenu;
+	MenuItem eventItem, userItem, registerItem, loginItem;
 	MenuBar navBar;
 	Label messageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
 	  eventName, eventDate, eventLocation, eventDesc,
@@ -74,6 +74,14 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 			viewAllEvents();
 		} else if(e.getSource() == userItem) {
 			
+		} else if(e.getSource() == registerItem || e.getSource() == loginItem) {
+			UserView userView = new UserView();
+			
+			try {
+				userView.start(this.stage);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	
@@ -102,6 +110,11 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	}
 	
 	public void init() {
+		profileMenu = new Menu("Profile");
+		profileMenu.setOnAction(this);
+		registerItem = new MenuItem("Register");
+		registerItem.setOnAction(this);
+		loginItem = new MenuItem("Login");
 		events = new Vector<Event>();
 		stage = new Stage();
 		borderContainer = new BorderPane();
@@ -162,7 +175,10 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	public void arrangeComponent() {
 		navMenu.getItems().add(eventItem);
 		navMenu.getItems().add(userItem);
+		profileMenu.getItems().add(registerItem);
+		profileMenu.getItems().add(loginItem);
 		navBar.getMenus().add(navMenu);
+		navBar.getMenus().add(profileMenu);
 		
 		borderContainer.setTop(navBar);
 		

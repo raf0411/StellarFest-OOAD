@@ -105,6 +105,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	        ChangeProfileView changeProfileView = new ChangeProfileView();
 	        
 	        try {
+	        	changeProfileView.setUserID(userID);
 	        	changeProfileView.setOldPassword(oldPassword);
 	        	changeProfileView.setEmail(email);
 	        	changeProfileView.setOldEmail(email);
@@ -266,14 +267,20 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	}
 	
 	public void viewOrganizedEvents(String userID) {
-		events.removeAllElements();
-		events = eventOrganizerController.viewOrganizedEvents(userID);
-		
-	    ObservableList<Event> eventRegObs = FXCollections.observableArrayList(events);
-	    eventTable.setItems(eventRegObs);
-	    
+		refreshEventTable();
 	    borderContainer.setCenter(eventTable);
 	    borderContainer.setBottom(vb);
+	}
+	
+	public void refreshEventTable() {
+		getAllEvents();
+	    ObservableList<Event> eventRegObs = FXCollections.observableArrayList(events);
+	    eventTable.setItems(eventRegObs);
+	}
+	
+	public void getAllEvents() {
+		events.removeAllElements();
+		events = eventOrganizerController.viewOrganizedEvents(userID);
 	}
 	
 	public void viewOrganizedEventDetails(String eventID) {

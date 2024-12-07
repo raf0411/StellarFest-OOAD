@@ -20,6 +20,7 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 	private String email;
 	private String oldPassword;
 	private String oldEmail;
+	private String userID;
 	
 	Stage stage;
 	Scene scene;
@@ -43,23 +44,31 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		this.stage.show();
 		
 		backBtn.setOnAction(event -> {
-		    EventOrganizerView eventOrganizerView = new EventOrganizerView();
-		    GuestView guestView = new GuestView();
-		    VendorView vendorView = new VendorView();
-		    
 		    try {
-		    	if(getRole().equals("Event Organizer")) {
-		    		eventOrganizerView.start(this.stage);
-		    	} else if(getRole().equals("Guest")) {
-		    		guestView.start(this.stage);
-		    	} else if(getRole().equals("Vendor")) {
-		    		vendorView.start(this.stage);
-		    	}
-		        
+		        if (getRole().equals("Event Organizer")) {
+		            EventOrganizerView eventOrganizerView = new EventOrganizerView();
+		            eventOrganizerView.setEmail(this.email);
+		            eventOrganizerView.setUserID(getUserID());
+		            eventOrganizerView.start(this.stage);
+		            eventOrganizerView.refreshEventTable();
+		        } else if (getRole().equals("Guest")) {
+		            GuestView guestView = new GuestView();
+		            guestView.setEmail(this.email);
+		            guestView.setUserID(userID);
+		            guestView.start(this.stage);
+		            guestView.refreshTable();
+		        } else if (getRole().equals("Vendor")) {
+		            VendorView vendorView = new VendorView();
+		            vendorView.setEmail(this.email);
+		            vendorView.setUserId(userID);
+		            vendorView.start(this.stage);  
+		            vendorView.refreshTable();     
+		        }
 		    } catch (Exception ex) {
 		        ex.printStackTrace();
 		    }
 		});
+
 	}
 
 	@Override
@@ -153,5 +162,13 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 
 	public void setOldEmail(String oldEmail) {
 		this.oldEmail = oldEmail;
+	}
+
+	public String getUserID() {
+		return userID;
+	}
+
+	public void setUserID(String userID) {
+		this.userID = userID;
 	}
 }

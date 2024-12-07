@@ -42,7 +42,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	private String message;
 	private String oldPassword;
 	
-	Stage s;
+	Stage stage;
 	Scene scene;
 	BorderPane borderContainer;
 	GridPane eventDetailContainer;
@@ -68,15 +68,15 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	}
 
 	@Override
-	public void start(Stage s) throws Exception {
+	public void start(Stage stage) throws Exception {
 		init();
 		arrangeComponent();
 		
-		this.s = s;
-		this.s.setTitle("Home Page");
-		this.s.setResizable(false);
-		this.s.setScene(scene);
-		this.s.show();
+		this.stage = stage;
+		this.stage.setTitle("Home Page");
+		this.stage.setResizable(false);
+		this.stage.setScene(scene);
+		this.stage.show();
 	}
 	
 	@Override
@@ -97,6 +97,27 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 			}
 			
 			acceptInvitation(getEventId(), getUserID(), "Guest");
+		} else if(e.getSource() == loginNav || e.getSource() == registerNav) {
+			UserView userView = new UserView();
+			
+			try {
+				userView.start(this.stage);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} else if(e.getSource() == changeProfileNav) {
+	        ChangeProfileView changeProfileView = new ChangeProfileView();
+	        
+	        try {
+	        	changeProfileView.setUserID(userID);
+	        	changeProfileView.setOldPassword(oldPassword);
+	        	changeProfileView.setEmail(email);
+	        	changeProfileView.setOldEmail(email);
+	        	changeProfileView.setRole("Guest");
+	            changeProfileView.start(this.stage);
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
 		}
 	}
 	
@@ -142,6 +163,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	}
 	
 	public void init() {
+		stage = new Stage();
 		profileMenu = new Menu("Profile");
 		registerNav = new MenuItem("Register");
 		registerNav.setOnAction(this);
@@ -315,7 +337,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 		borderContainer.setBottom(eventBottomBox);
 	}
 	
-	private void refreshTable() {
+	public void refreshTable() {
 		getInvitations(email);
 	    ObservableList<Event> regInvObs = FXCollections.observableArrayList(invitations);
 	    invitationTable.setItems(regInvObs);

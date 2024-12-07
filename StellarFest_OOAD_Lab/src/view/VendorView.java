@@ -49,6 +49,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 			 registerNav, loginNav, changeProfileNav;
 	MenuBar navBar;
 	
+	Stage stage;
 	Scene scene;
 	BorderPane borderContainer;
 	GridPane eventDetailContainer, manageVendorContainer;
@@ -72,13 +73,15 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	}
 
 	@Override
-	public void start(Stage s) throws Exception {
+	public void start(Stage stage) throws Exception {
 		init();
 		arrangeComponent();
 		
-		s.setTitle("Vendor");
-		s.setScene(scene);
-		s.show();
+		this.stage = stage;
+		
+		this.stage.setTitle("Vendor");
+		this.stage.setScene(scene);
+		this.stage.show();
 	}
 	
 	@Override
@@ -108,6 +111,27 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 			String productName = productNameTF.getText();
 			String productDesc = productDescTF.getText();
 			manageVendor(productDesc, productName);
+		} else if(e.getSource() == loginNav || e.getSource() == registerNav) {
+			UserView userView = new UserView();
+			
+			try {
+				userView.start(this.stage);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} else if(e.getSource() == changeProfileNav) {
+	        ChangeProfileView changeProfileView = new ChangeProfileView();
+	        
+	        try {
+	        	changeProfileView.setUserID(userId);
+	        	changeProfileView.setOldPassword(oldPassword);
+	        	changeProfileView.setEmail(email);
+	        	changeProfileView.setOldEmail(email);
+	        	changeProfileView.setRole("Vendor");
+	            changeProfileView.start(this.stage);
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
 		}
 	}
 	
@@ -153,6 +177,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	}
 	
 	public void init() {
+		stage = new Stage();
 		navMenu = new Menu("Menu");
 		invitationNav = new MenuItem("Invitation");
 		invitationNav.setOnAction(this);
