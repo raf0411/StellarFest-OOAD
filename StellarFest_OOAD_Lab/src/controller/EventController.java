@@ -47,9 +47,8 @@ public class EventController {
 			return message;
 		} else {
 			message = "Event created successfully!";
+			return message;
 		}
-		
-		return message;
 	}
 	
 	public void viewEventDetails(String eventID) {
