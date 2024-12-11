@@ -28,7 +28,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Event;
+import model.Guest;
 import model.User;
+import model.Vendor;
 
 public class AdminView extends Application implements EventHandler<ActionEvent>{
 	private AdminController adminController = new AdminController();
@@ -45,14 +47,16 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	TableColumn<Event, String> eventLocationCol;
 	TableColumn<Event, String> eventDescCol;
 	TableColumn<Event, String> eventOrganizerCol;
-	Vector<Event> events;
+	Vector<Event> events, eventDetails;
 	Vector<User> users;
+	Vector<Guest> guestAttendeesDetail;
+	Vector<Vendor> vendorAttendeesDetail;
 	Menu navMenu, profileMenu;
 	MenuItem eventItem, userItem, registerItem, loginItem;
 	MenuBar navBar;
 	Label messageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
-	  eventName, eventDate, eventLocation, eventDesc,
-	  productNameLbl, productDescLbl, manageVendorTitle;
+		  eventName, eventDate, eventLocation, eventDesc,
+		  productNameLbl, productDescLbl, manageVendorTitle, guestsLbl, guestsList, vendorsLbl, vendorsList;
 	VBox invitationBottomBox, eventBottomBox, eventDetailBox, manageVendorBox;
 	
 	@Override
@@ -128,6 +132,12 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		navBar = new MenuBar();
 		scene = new Scene(borderContainer, 1280, 720);
 		eventDetailBox = new VBox();
+		guestAttendeesDetail = new Vector<Guest>();
+		vendorAttendeesDetail = new Vector<Vendor>();
+		guestsLbl = new Label("Guests: ");
+		guestsList = new Label();
+		vendorsLbl = new Label("Vendors: ");
+		vendorsList = new Label();
 		
 		eventTable = new TableView<Event>();
 		eventIdCol = new TableColumn<Event, String>("ID");
@@ -193,9 +203,15 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	    
 	    eventLocationLbl.setFont(new Font("Verdana", 16));
 	    eventLocationLbl.setStyle("-fx-font-weight: bold");
-	    
+
 	    eventDescLbl.setFont(new Font("Verdana", 16));
 	    eventDescLbl.setStyle("-fx-font-weight: bold");
+	    
+	    guestsLbl.setFont(new Font("Verdana", 16));
+	    guestsLbl.setStyle("-fx-font-weight: bold");
+	    
+	    vendorsLbl.setFont(new Font("Verdana", 16));
+	    vendorsLbl.setStyle("-fx-font-weight: bold");
 	    
 		eventDetailContainer.add(eventNameLbl, 0, 0);
 		eventDetailContainer.add(eventName, 1, 0);
@@ -209,9 +225,17 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		eventDetailContainer.add(eventDescLbl, 0, 3);
 		eventDetailContainer.add(eventDesc, 1, 3);
 		
+		eventDetailContainer.add(guestsLbl, 0, 4);
+		eventDetailContainer.add(guestsList, 1, 4);
+		
+		eventDetailContainer.add(vendorsLbl, 0, 5);
+		eventDetailContainer.add(vendorsList, 1, 5);
+		
 		eventDetailContainer.setPadding (new Insets (20));
 		eventDetailContainer.setVgap(10);
 		eventDetailContainer.setHgap(10);
+		eventDetailContainer.setAlignment(Pos.CENTER);
+		
 		eventDetailBox.getChildren().add(eventDetailTitle);
 	    eventDetailBox.setMargin(eventDetailTitle, new Insets(10, 10, 10, 10));
 	    eventDetailBox.getChildren().add(eventDetailContainer);
@@ -230,8 +254,19 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	}
 	
 	public void viewEventDetails(String eventID) {
-		getGuestsByTransactionID(eventID);
-		getVendorsByTransactionID(eventID);
+		guestAttendeesDetail.removeAllElements();
+		vendorAttendeesDetail.removeAllElements();
+		
+		if(adminController.getGuestsByTransactionID(eventID) != null) {
+			guestAttendeesDetail = adminController.getGuestsByTransactionID(eventID);	
+		}
+		
+		if(adminController.getVendorsByTransactionID(eventID) != null) {
+			vendorAttendeesDetail = adminController.getVendorsByTransactionID(eventID);	
+		}
+		
+		guestsList.setText(guestAttendeesDetail.toString());
+		vendorsList.setText(vendorAttendeesDetail.toString());
 	}
 	
 	public void getAllEvents() {

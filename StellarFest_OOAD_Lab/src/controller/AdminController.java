@@ -3,10 +3,14 @@ package controller;
 import java.util.Vector;
 
 import model.Event;
+import model.Guest;
 import model.User;
+import model.Vendor;
 
 public class AdminController {
 	private Event event = new Event();
+	private Guest guest = new Guest();
+	private Vendor vendor = new Vendor();
 	Vector<Event> events;
 	
 	public Vector<Event> viewAllEvents() {
@@ -36,11 +40,19 @@ public class AdminController {
 		events = event.getAllEvents();
 	}
 	
-	public void getGuestsByTransactionID(String eventID) {
+	public Vector<Guest> getGuestsByTransactionID(String eventID) {
+		if(event.getEventByEventId(eventID) != null) {
+			return guest.getGuestsByTransactionID(eventID);
+		}
 		
+		return null;
 	}
 	
-	public void getVendorsByTransactionID(String eventID) {
+	public Vector<Vendor> getVendorsByTransactionID(String eventID) {
+		if(event.getEventByEventId(eventID) != null) {
+			return vendor.getVendorsByTransactionID(eventID);
+		}
 		
+		return null;
 	}
 }

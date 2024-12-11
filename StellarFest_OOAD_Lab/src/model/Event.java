@@ -172,6 +172,40 @@ public class Event {
 		return message;
 	}
 	
+	public Event getEventByEventId(String eventId) {
+		String query = "SELECT * FROM events\r\n"
+			         + "WHERE event_id = ?";
+		Event event = null;
+		
+		PreparedStatement ps = db.prepareStatement(query);
+		
+		try {
+			ps.setString(1, eventId);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+	            String eventID = rs.getString("event_id");
+	            String eventName = rs.getString("event_name");
+	            String eventDate = rs.getString("event_date");
+	            String eventLocation = rs.getString("event_location");
+	            String eventDescription = rs.getString("event_description");
+	            String organizerId = rs.getString("organizer_id");
+				
+				event = new Event(eventID, eventName, eventDate, eventLocation, eventDescription, organizerId);	
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		if(event != null) {
+			return event;
+		} else {
+			return event;
+		}
+	}
+	
 	// SETTER AND GETTER
 	public String getEvent_id() {
 		return event_id;
