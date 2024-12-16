@@ -26,10 +26,6 @@ public class Admin extends User{
 		
 	}
 	
-	public void getAllUsers() {
-		
-	}
-	
 	public void getAllEvents() {
 		
 	}

@@ -3,6 +3,7 @@ package model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 import database.Database;
 import util.RandomIDGenerator;
@@ -169,7 +170,42 @@ public class User {
 	    return user;
 	}
 	
-	//SETTER AND GETTER
+	public Vector<User> getAllUsers(){
+		Vector<User> users = new Vector<>();
+		String query = "SELECT * FROM users";
+		
+		db.resultSet = db.execQuery(query);
+		
+		try {
+			while(db.resultSet.next()) {
+				String userId = db.resultSet.getString("user_id");
+				String userEmail = db.resultSet.getString("user_email");
+				String userName = db.resultSet.getString("user_name");
+				String userPassword = db.resultSet.getString("user_password");
+				String userRole = db.resultSet.getString("user_role");
+				
+				users.add(new User(userId, userEmail, userName, userPassword, userRole));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return users;
+	}
+	
+	public void deleteUser(String userID) {
+		String query = "DELETE FROM users WHERE user_id = ?";
+		
+	    try {
+	        try (PreparedStatement ps = db.prepareStatement(query)) {
+	        	ps.setString(1, userID);
+	        	ps.executeUpdate();
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	public String getUser_id() {
 		return user_id;
 	}

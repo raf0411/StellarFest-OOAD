@@ -11,6 +11,7 @@ public class AdminController {
 	private Event event = new Event();
 	private Guest guest = new Guest();
 	private Vendor vendor = new Vendor();
+	private User user = new User();
 	Vector<Event> events;
 	
 	public Vector<Event> viewAllEvents() {
@@ -32,12 +33,17 @@ public class AdminController {
 		}
 	}
 
-	public void deleteUser(String userID) {
-		
+	public String deleteUser(String userID) {
+		if(userID == null || userID.isEmpty()) {
+			return "User is not filled!";
+		} else {
+			user.deleteUser(userID);
+			return "User successfully deleted!";
+		}
 	}
 	
 	public Vector<User> getAllUsers() {
-		Vector<User> users = new Vector<>();
+		Vector<User> users = user.getAllUsers();
 		return users;
 	}
 	

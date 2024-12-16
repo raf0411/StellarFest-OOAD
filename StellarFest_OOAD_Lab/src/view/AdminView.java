@@ -43,12 +43,16 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	GridPane eventDetailContainer;
 	VBox vb;
 	TableView<Event> eventTable;
+	TableView<User> userTable;
 	TableColumn<Event, String> eventIdCol;
 	TableColumn<Event, String> eventNameCol;
 	TableColumn<Event, String> eventDateCol;
 	TableColumn<Event, String> eventLocationCol;
 	TableColumn<Event, String> eventDescCol;
 	TableColumn<Event, String> eventOrganizerCol;
+	TableColumn<User, String> userNameCol;
+	TableColumn<User, String> userEmailCol;
+	TableColumn<User, String> userRoleCol;
 	Vector<Event> events, eventDetails;
 	Vector<User> users;
 	Vector<Guest> guestAttendeesDetail;
@@ -56,11 +60,13 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	Menu navMenu, profileMenu;
 	MenuItem eventItem, userItem, registerItem, loginItem;
 	MenuBar navBar;
-	Label messageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
+	Label messageLbl, userMessageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
 		  eventName, eventDate, eventLocation, eventDesc,
 		  productNameLbl, productDescLbl, manageVendorTitle, guestsLbl, guestsList, vendorsLbl, vendorsList;
-	VBox invitationBottomBox, eventBottomBox, eventDetailBox, manageVendorBox, btnBox;
-	Button deleteEventBtn;
+	VBox invitationBottomBox, eventBottomBox, eventDetailBox, 
+		 manageVendorBox, btnBox, userBtnBox;
+	Button deleteEventBtn, deleteUserBtn;
+	String tempUserId = null;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -80,7 +86,7 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		if(e.getSource() == eventItem) {
 			viewAllEvents();
 		} else if(e.getSource() == userItem) {
-			// TODO
+			viewAllUsers();
 		} else if(e.getSource() == registerItem || e.getSource() == loginItem) {
 			UserView userView = new UserView();
 			
@@ -89,9 +95,29 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
+			
 		} else if(e.getSource() == deleteEventBtn) {
 			deleteEvent(getEventID());
+		} else if(e.getSource() == deleteUserBtn) {
+			deleteUser(tempUserId);
 		}
+	}
+	
+	private EventHandler<MouseEvent> userTableMouseEvent(){
+		return new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				TableSelectionModel<User> userTbm = userTable.getSelectionModel();
+				userTbm.setSelectionMode(SelectionMode.SINGLE);
+				User selectedUser = userTbm.getSelectedItem();
+
+	            if (selectedUser != null) {
+					tempUserId = selectedUser.getUser_id();
+	            } else {
+	            	return;
+	            }
+			}
+		};
 	}
 	
 	private EventHandler<MouseEvent> eventTableMouseEvent(){
@@ -124,6 +150,7 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		registerItem.setOnAction(this);
 		loginItem = new MenuItem("Login");
 		events = new Vector<Event>();
+		users = new Vector<User>();
 		stage = new Stage();
 		borderContainer = new BorderPane();
 		eventDetailContainer = new GridPane();
@@ -146,6 +173,11 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		deleteEventBtn = new Button("Delete Event");
 		deleteEventBtn.setOnAction(this);
 		
+		userMessageLbl = new Label();
+		deleteUserBtn = new Button("Delete User");
+		deleteUserBtn.setOnAction(this);
+		userBtnBox = new VBox();
+		
 		eventTable = new TableView<Event>();
 		eventIdCol = new TableColumn<Event, String>("ID");
 		eventNameCol = new TableColumn<Event, String>("Event Name");
@@ -153,6 +185,11 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		eventLocationCol = new TableColumn<Event, String>("Location");
 		eventDescCol = new TableColumn<Event, String>("Description");
 		eventOrganizerCol = new TableColumn<Event, String>("Organizer ID");
+		
+		userTable = new TableView<User>();
+		userNameCol = new TableColumn<User, String>("Username");
+		userEmailCol = new TableColumn<User, String>("Email");
+		userRoleCol = new TableColumn<User, String>("Role");
 		
 		eventDetailTitle = new Label("Event Detail");
 		eventNameLbl = new Label("Event Name: ");
@@ -163,6 +200,7 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		eventLocation = new Label("");
 		eventDescLbl = new Label("Event Description: ");
 		eventDesc = new Label("");
+		messageLbl = new Label();
 		
 		eventIdCol.setCellValueFactory(new PropertyValueFactory<Event, String>("event_id"));
 		eventNameCol.setCellValueFactory(new PropertyValueFactory<Event, String>("event_name"));
@@ -181,12 +219,21 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		eventOrganizerCol.prefWidthProperty().bind(eventTable.widthProperty().multiply(0.34));
 		
 		eventTable.setOnMouseClicked(eventTableMouseEvent());
-		
-		refreshTable();
-	}
 	
-	public void initUser() {
-		users = new Vector<User>();
+		userEmailCol.setCellValueFactory(new PropertyValueFactory<User, String>("user_email"));
+		userNameCol.setCellValueFactory(new PropertyValueFactory<User, String>("user_name"));
+		userRoleCol.setCellValueFactory(new PropertyValueFactory<User, String>("user_role"));
+		
+		userTable.getColumns().addAll(userEmailCol, userNameCol, userRoleCol);
+		
+		userNameCol.prefWidthProperty().bind(userTable.widthProperty().multiply(0.34));
+		userEmailCol.prefWidthProperty().bind(userTable.widthProperty().multiply(0.34));
+		userRoleCol.prefWidthProperty().bind(userTable.widthProperty().multiply(0.34));
+		
+		userTable.setOnMouseClicked(userTableMouseEvent());
+		
+		refreshEventTable();
+		refreshUserTable();
 	}
 	
 	public void arrangeComponent() {
@@ -196,10 +243,15 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		profileMenu.getItems().add(loginItem);
 		navBar.getMenus().add(navMenu);
 		navBar.getMenus().add(profileMenu);
+		
+		btnBox.getChildren().add(messageLbl);
 		btnBox.getChildren().add(deleteEventBtn);
+		userBtnBox.getChildren().add(userMessageLbl);
+		userBtnBox.getChildren().add(deleteUserBtn);
+		btnBox.setAlignment(Pos.CENTER);
+		userBtnBox.setAlignment(Pos.CENTER);
 		
 		borderContainer.setTop(navBar);
-		borderContainer.setBottom(btnBox);
 		
 	    eventDetailTitle.setFont(new Font("Verdana", 24));
 	    eventDetailTitle.setStyle("-fx-font-weight: bold");
@@ -251,17 +303,28 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	    eventDetailBox.setAlignment(Pos.CENTER);
 	}
 	
-	public void refreshTable() {	    
+	public void refreshEventTable() {	    
 	    getAllEvents();
 	    ObservableList<Event> regEventsObs = FXCollections.observableArrayList(events);
 	    eventTable.setItems(regEventsObs);
+	}
+
+	public void refreshUserTable() {	    
+	    getAllUsers();
+	    ObservableList<User> regUsersObs = FXCollections.observableArrayList(users);
+	    userTable.setItems(regUsersObs);
 	}
 	
 	public void viewAllEvents() {
 		getAllEvents();
 		borderContainer.setCenter(eventTable);
-	    btnBox.setAlignment(Pos.CENTER);
 		borderContainer.setBottom(btnBox);
+	}
+	
+	public void viewAllUsers() {
+		getAllUsers();
+		borderContainer.setCenter(userTable);
+		borderContainer.setBottom(userBtnBox);
 	}
 	
 	public void viewEventDetails(String eventID) {
@@ -287,17 +350,28 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	}
 	
 	public void deleteEvent(String eventID) {
-		adminController.deleteEvent(eventID);
+		String message = adminController.deleteEvent(eventID);
+		
+		messageLbl.setText(message);
+		
+		setEventID(null);
 		viewAllEvents();
-		refreshTable();
+		refreshEventTable();
 	}
 
 	public void deleteUser(String userID) {
+		String message = adminController.deleteUser(userID);
 		
+		userMessageLbl.setText(message);
+		
+		tempUserId = null;
+		viewAllUsers();
+		refreshUserTable();
 	}
 	
 	public void getAllUsers() {
-		
+		users.removeAllElements();
+		users = adminController.getAllUsers();
 	}
 	
 	public void getGuestsByTransactionID(String eventID) {
