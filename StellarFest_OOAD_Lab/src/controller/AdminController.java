@@ -23,8 +23,13 @@ public class AdminController {
 		getVendorsByTransactionID(eventID);
 	}
 	
-	public void deleteEvent(String eventID) {
-		
+	public String deleteEvent(String eventID) {
+		if(eventID == null || eventID.isEmpty()) {
+			return "Event is not filled!";
+		} else {
+			event.deleteEvent(eventID);
+			return "Event successfully deleted!";
+		}
 	}
 
 	public void deleteUser(String userID) {

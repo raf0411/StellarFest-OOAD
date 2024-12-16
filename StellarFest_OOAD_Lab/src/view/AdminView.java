@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -34,6 +35,7 @@ import model.Vendor;
 
 public class AdminView extends Application implements EventHandler<ActionEvent>{
 	private AdminController adminController = new AdminController();
+	private String eventID;
 	
 	Stage stage;
 	Scene scene;
@@ -57,7 +59,8 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	Label messageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
 		  eventName, eventDate, eventLocation, eventDesc,
 		  productNameLbl, productDescLbl, manageVendorTitle, guestsLbl, guestsList, vendorsLbl, vendorsList;
-	VBox invitationBottomBox, eventBottomBox, eventDetailBox, manageVendorBox;
+	VBox invitationBottomBox, eventBottomBox, eventDetailBox, manageVendorBox, btnBox;
+	Button deleteEventBtn;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -77,7 +80,7 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		if(e.getSource() == eventItem) {
 			viewAllEvents();
 		} else if(e.getSource() == userItem) {
-			
+			// TODO
 		} else if(e.getSource() == registerItem || e.getSource() == loginItem) {
 			UserView userView = new UserView();
 			
@@ -86,6 +89,8 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
+		} else if(e.getSource() == deleteEventBtn) {
+			deleteEvent(getEventID());
 		}
 	}
 	
@@ -99,12 +104,11 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 
 	            if (selectedEvent != null) {
 					viewEventDetails(selectedEvent.getEvent_id());
-					
+					setEventID(selectedEvent.getEvent_id());
 					eventName.setText(selectedEvent.getEvent_name());
 					eventDate.setText(selectedEvent.getEvent_date());
 					eventLocation.setText(selectedEvent.getEvent_location());
 					eventDesc.setText(selectedEvent.getEvent_description());
-					
 					borderContainer.setCenter(eventDetailBox);
 	            } else {
 	            	return;
@@ -138,6 +142,9 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		guestsList = new Label();
 		vendorsLbl = new Label("Vendors: ");
 		vendorsList = new Label();
+		btnBox = new VBox();
+		deleteEventBtn = new Button("Delete Event");
+		deleteEventBtn.setOnAction(this);
 		
 		eventTable = new TableView<Event>();
 		eventIdCol = new TableColumn<Event, String>("ID");
@@ -189,8 +196,10 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		profileMenu.getItems().add(loginItem);
 		navBar.getMenus().add(navMenu);
 		navBar.getMenus().add(profileMenu);
+		btnBox.getChildren().add(deleteEventBtn);
 		
 		borderContainer.setTop(navBar);
+		borderContainer.setBottom(btnBox);
 		
 	    eventDetailTitle.setFont(new Font("Verdana", 24));
 	    eventDetailTitle.setStyle("-fx-font-weight: bold");
@@ -251,6 +260,8 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	public void viewAllEvents() {
 		getAllEvents();
 		borderContainer.setCenter(eventTable);
+	    btnBox.setAlignment(Pos.CENTER);
+		borderContainer.setBottom(btnBox);
 	}
 	
 	public void viewEventDetails(String eventID) {
@@ -267,6 +278,7 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		
 		guestsList.setText(guestAttendeesDetail.toString());
 		vendorsList.setText(vendorAttendeesDetail.toString());
+		borderContainer.setBottom(null);
 	}
 	
 	public void getAllEvents() {
@@ -275,7 +287,9 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	}
 	
 	public void deleteEvent(String eventID) {
-		
+		adminController.deleteEvent(eventID);
+		viewAllEvents();
+		refreshTable();
 	}
 
 	public void deleteUser(String userID) {
@@ -292,5 +306,13 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 	
 	public void getVendorsByTransactionID(String eventID) {
 		
+	}
+
+	public String getEventID() {
+		return eventID;
+	}
+
+	public void setEventID(String eventID) {
+		this.eventID = eventID;
 	}
 }

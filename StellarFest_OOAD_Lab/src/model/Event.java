@@ -206,7 +206,26 @@ public class Event {
 		}
 	}
 	
-	// SETTER AND GETTER
+	public void deleteEvent(String eventID) {
+	    String deleteInvitationsQuery = "DELETE FROM invitation WHERE event_id = ?";
+	    String deleteEventQuery = "DELETE FROM events WHERE event_id = ?";
+
+	    try {
+	        try (PreparedStatement ps1 = db.prepareStatement(deleteInvitationsQuery)) {
+	            ps1.setString(1, eventID);
+	            ps1.executeUpdate();
+	        }
+
+	        try (PreparedStatement ps2 = db.prepareStatement(deleteEventQuery)) {
+	            ps2.setString(1, eventID);
+	            ps2.executeUpdate();
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	public String getEvent_id() {
 		return event_id;
 	}
