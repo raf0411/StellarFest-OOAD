@@ -63,7 +63,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	TableView<Vendor> vendorTable;
 	Label eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, guestAttendeesLbl, vendorAttendeesLbl,
 		  eventName, eventDate, eventLocation, eventDesc, guestAttendees, vendorAttendees, messageLbl;
-	Button addVendorBtn, editEventBtn, confirmEditBtn, saveEventBtn;
+	Button addVendorBtn, editEventBtn, confirmEditBtn, saveEventBtn, addBtn;
 	TextField eventNameTF, eventLocationTF, eventDescTF;
 	DatePicker eventDateDP;
 	
@@ -180,6 +180,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		saveEventBtn = new Button("Save Event");
 		saveEventBtn.setOnAction(this);
 		messageLbl = new Label();
+		addBtn = new Button("Add");
 		
 		events = new Vector<Event>();
 		stage = new Stage();
