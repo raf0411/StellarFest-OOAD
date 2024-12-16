@@ -149,6 +149,7 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		registerItem = new MenuItem("Register");
 		registerItem.setOnAction(this);
 		loginItem = new MenuItem("Login");
+		loginItem.setOnAction(this);
 		events = new Vector<Event>();
 		users = new Vector<User>();
 		stage = new Stage();

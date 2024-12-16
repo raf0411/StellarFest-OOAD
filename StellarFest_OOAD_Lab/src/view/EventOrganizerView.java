@@ -388,8 +388,13 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 
 	    message = eventController.createEvent(eventName, eventDate, eventLocation, eventDesc, userID);
 	    messageLbl.setText(message);
+	    
+	    if(!message.equals("Event created successfully!")) {
+	    	return;
+	    }
+	    
+	    refreshCreateEventTF();
 	}
-
 	
 	public void editEventName(String eventID, String eventName) {
 		String newEventName = eventNameTF.getText();
@@ -403,6 +408,13 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 			messageLbl.setTextFill(Color.RED);
 			messageLbl.setText(message);
 		}
+	}
+	
+	public void refreshCreateEventTF() {
+		eventNameTF.setText("");
+		eventDateDP.setValue(null);
+		eventLocationTF.setText("");
+		eventDescTF.setText("");
 	}
 
 	public void setUserID(String userID) {

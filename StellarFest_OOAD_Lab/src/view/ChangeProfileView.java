@@ -68,7 +68,6 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		        ex.printStackTrace();
 		    }
 		});
-
 	}
 
 	@Override
