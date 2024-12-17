@@ -67,7 +67,6 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		System.out.println(email);
 		init();
 		arrangeComponent();
 		
