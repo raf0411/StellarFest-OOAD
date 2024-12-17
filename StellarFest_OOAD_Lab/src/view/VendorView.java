@@ -81,7 +81,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		
 		this.stage = stage;
 		
-		this.stage.setTitle("Vendor");
+		this.stage.setTitle("Vendor View");
 		this.stage.setScene(scene);
 		this.stage.show();
 	}

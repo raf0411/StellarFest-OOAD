@@ -76,7 +76,7 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		this.stage = stage;
 		
 		this.stage.setScene(scene);
-		this.stage.setTitle("Admin");
+		this.stage.setTitle("Admin View");
 		this.stage.setResizable(false);
 		this.stage.show();
 	}

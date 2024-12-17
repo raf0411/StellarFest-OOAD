@@ -73,7 +73,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 		arrangeComponent();
 		
 		this.stage = stage;
-		this.stage.setTitle("Home Page");
+		this.stage.setTitle("Guest View");
 		this.stage.setResizable(false);
 		this.stage.setScene(scene);
 		this.stage.show();

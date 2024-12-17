@@ -43,7 +43,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		arrangeForm();
 		
 		this.stage = stage;
-		this.stage.setTitle("User");
+		this.stage.setTitle("User View");
 		this.stage.setScene(scene);
 		this.stage.setResizable(false);
 		this.stage.show();

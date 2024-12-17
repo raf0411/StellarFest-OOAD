@@ -84,7 +84,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		arrange();
 		
 		this.stage = stage;
-		this.stage.setTitle("Event Organizer");
+		this.stage.setTitle("Event Organizer View");
 		this.stage.setScene(scene);
 		this.stage.show();
 	}
