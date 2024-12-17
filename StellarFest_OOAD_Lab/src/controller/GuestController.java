@@ -7,13 +7,11 @@ import model.Guest;
 import model.Invitation;
 
 public class GuestController {
-	private Guest guest = new Guest();
 	private Event event = new Event();
 	private Invitation invitation = new Invitation();
 	
 	public String acceptInvitation(String eventID, String userID) {
 		String message = invitation.acceptInvitation(eventID, userID);
-		
 		return message;
 	}
 	
@@ -24,7 +22,6 @@ public class GuestController {
 	
 	public Vector<Event> getInvitations(String email) {
 		Vector<Event> invitations = invitation.getInvitations(email);
-		
 		return invitations;
 	}
 }

@@ -135,11 +135,10 @@ public class Invitation {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		return invitations;
 	}
 	
-	// SETTER AND GETTER
 	public String getInvitation_id() {
 		return invitation_id;
 	}

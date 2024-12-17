@@ -323,7 +323,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		}
 	}
 	
-	private void switchToGuestView(Stage s, String id, String email, String password) {
+	private void switchToGuestView(Stage s, String email, String id, String password) {
 		GuestView guestView = new GuestView();
 		
 		try {
