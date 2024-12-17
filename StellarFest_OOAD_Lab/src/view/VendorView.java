@@ -21,6 +21,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableSelectionModel;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -62,7 +63,8 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		  eventName, eventDate, eventLocation, eventDesc,
 		  productNameLbl, productDescLbl, manageVendorTitle;
     VBox invitationBottomBox, eventBottomBox, eventDetailBox, manageVendorBox;
-    TextField productNameTF, productDescTF;
+    TextField productNameTF;
+    TextArea productDescTF;
     
 	public String getOldPassword() {
 		return oldPassword;
@@ -105,12 +107,13 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		} else if(e.getSource() == manageVendorNav) {
 			initManageVendor();
 		} else if(e.getSource() == saveBtn) {
-			productNameTF.setText("");
-			productDescTF.setText("");
-			
 			String productName = productNameTF.getText();
 			String productDesc = productDescTF.getText();
 			manageVendor(productDesc, productName);
+			
+			productNameTF.setText("");
+			productDescTF.setText("");
+			
 		} else if(e.getSource() == loginNav || e.getSource() == registerNav) {
 			UserView userView = new UserView();
 			
@@ -211,7 +214,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		manageVendorBtn.setOnAction(this);
 		
 		productNameTF = new TextField();
-		productDescTF = new TextField();
+		productDescTF = new TextArea();
 		productNameLbl = new Label("Product Name: ");
 		productDescLbl = new Label("Product Description: ");
 		
@@ -417,12 +420,12 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 			messageLbl.setTextFill(Color.GREEN);
 			messageLbl.setText(message);
 			return;
+		} else {
+			message = "Input product invalid!";
+			messageLbl.setTextFill(Color.RED);
+			messageLbl.setText(message);
+			return;
 		}
-		
-		message = "Input product invalid!";
-		messageLbl.setTextFill(Color.RED);
-		messageLbl.setText(message);
-		return;
 	}
 
 	public void setEmail(String email) {

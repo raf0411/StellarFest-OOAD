@@ -61,39 +61,42 @@ public class Event {
 	}
 	
 	public Vector<Event> viewAcceptedEvents(String email) {
-		Vector<Event> events = new Vector<Event>();
-		
-		String query = "SELECT events.event_id, " +
-		               "events.event_name, " +
-		               "events.event_date, " +
-		               "events.event_location, " +
-		               "events.event_description, " +
-		               "users.user_id " +
-		               "FROM invitation " +
-		               "JOIN events ON invitation.event_id = events.event_id " +
-		               "JOIN users ON invitation.user_id = users.user_id " + 
-		               "WHERE users.user_email = '"+ email +"' " +
-		               "AND invitation.invitation_status = 'Accepted'";
-		
-		db.resultSet = db.execQuery(query);
-		
-		try {
-			while(db.resultSet.next()) {
-				String eventId = db.resultSet.getString("events.event_id");
-				String eventName = db.resultSet.getString("events.event_name");
-				String eventDate = db.resultSet.getString("events.event_date");
-				String eventLocation = db.resultSet.getString("events.event_location");
-				String eventDescription = db.resultSet.getString("events.event_description");
-				String organizerId = db.resultSet.getString("users.user_id");
-				
-				events.add(new Event(eventId, eventName, eventDate, eventLocation, eventDescription, organizerId));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return events;
+	    Vector<Event> events = new Vector<Event>();
+	    
+	    String query = "SELECT events.event_id, " +
+	                   "events.event_name, " +
+	                   "events.event_date, " +
+	                   "events.event_location, " +
+	                   "events.event_description, " +
+	                   "users.user_id " +
+	                   "FROM invitation " +
+	                   "JOIN events ON invitation.event_id = events.event_id " +
+	                   "JOIN users ON invitation.user_id = users.user_id " + 
+	                   "WHERE users.user_email = ? " +
+	                   "AND invitation.invitation_status = 'Accepted'";
+	    
+	    try (PreparedStatement ps = db.prepareStatement(query)) {
+	    	ps.setString(1, email);
+	        
+	        db.resultSet = ps.executeQuery();
+	        
+	        while (db.resultSet.next()) {
+	            String eventId = db.resultSet.getString("events.event_id");
+	            String eventName = db.resultSet.getString("events.event_name");
+	            String eventDate = db.resultSet.getString("events.event_date");
+	            String eventLocation = db.resultSet.getString("events.event_location");
+	            String eventDescription = db.resultSet.getString("events.event_description");
+	            String organizerId = db.resultSet.getString("users.user_id");
+	            
+	            events.add(new Event(eventId, eventName, eventDate, eventLocation, eventDescription, organizerId));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    
+	    return events;
 	}
+
 	
 	public Vector<Event> getAllEvents(){
 		Vector<Event> events = new Vector<Event>();

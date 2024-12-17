@@ -1,5 +1,6 @@
 package model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,15 +30,25 @@ public class Vendor extends User{
 	}
 	
 	public String manageVendor(String description, String product) {
-		String productID = RandomIDGenerator.generateUniqueID();
-		
-	    String query = "INSERT INTO product " +
-                	   "VALUES ('"+ productID +"' ,'"+ product +"', '"+ description +"')";
- 
-		db.execUpdate(query);
-		
-		String message = "Manage Success!";
-		return message;
+	    String productID = RandomIDGenerator.generateUniqueID();
+	    String message = "Manage Success!";
+	    
+	    String query = "INSERT INTO product (product_id, product_name, product_description) VALUES (?, ?, ?)";
+	    
+        PreparedStatement ps = db.prepareStatement(query);
+	    
+        try{ 
+	    	ps.setString(1, productID);   
+	        ps.setString(2, product);  
+	        ps.setString(3, description); 
+	        
+	        ps.execute();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        message = "Error manage product!";
+	    }
+	    
+	    return message;
 	}
 	
 	public void checkManageVendorInput(String description, String product) {

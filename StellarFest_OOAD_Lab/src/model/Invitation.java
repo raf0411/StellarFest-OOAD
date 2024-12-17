@@ -53,7 +53,6 @@ public class Invitation {
 		}
 	}
 	
-	// Salah Ini
 	public String acceptInvitation(String eventID, String userID) {
 	    Invitation invitation;
 	    String message = "Invitation Accepted!";
