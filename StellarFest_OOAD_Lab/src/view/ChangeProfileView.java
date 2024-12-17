@@ -54,9 +54,9 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		        } else if (getRole().equals("Guest")) {
 		            GuestView guestView = new GuestView();
 		            guestView.setEmail(this.email);
-		            guestView.setUserID(userID);
+		            guestView.setUserId(userID);
 		            guestView.start(this.stage);
-		            guestView.refreshTable();
+//		            guestView.refreshTable();
 		        } else if (getRole().equals("Vendor")) {
 		            VendorView vendorView = new VendorView();
 		            vendorView.setEmail(this.email);

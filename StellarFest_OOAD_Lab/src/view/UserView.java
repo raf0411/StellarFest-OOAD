@@ -328,7 +328,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		
 		try {
 			guestView.setOldPassword(password);
-			guestView.setUserID(id);
+			guestView.setUserId(id);
 			guestView.setEmail(email);
 			guestView.start(s);
 		} catch (Exception e) {

@@ -21,6 +21,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableSelectionModel;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -36,36 +37,33 @@ import model.Event;
 public class GuestView extends Application implements EventHandler<ActionEvent>{
 	private GuestController guestController = new GuestController();
 	private InvitationController invitationController = new InvitationController();
+	
 	private String email;
-	private String userID;
+	private String userId;
 	private String eventId;
 	private String message;
 	private String oldPassword;
+	
+	Menu navMenu, profileMenu;
+	MenuItem invitationNav, eventNav,
+			 registerNav, loginNav, changeProfileNav;
+	MenuBar navBar;
 	
 	Stage stage;
 	Scene scene;
 	BorderPane borderContainer;
 	GridPane eventDetailContainer;
-	Button invitationBtn, eventBtn, acceptBtn;
+	Button acceptBtn, saveBtn;
 	TableView<Event> invitationTable;
-	TableView<Event> eventTable;
+	TableView<Event> acceptedEventTable;
 	Vector<Event> invitations;
-	Vector<Event> events;
+	Vector<Event> acceptedEvents;
 	Label messageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
 		  eventName, eventDate, eventLocation, eventDesc,
-		  productNameLbl, productDescLbl, manageVendorTitle;
-    VBox invitationBottomBox, eventBottomBox, eventDetailBox, manageVendorBox;
-	Menu navMenu, profileMenu;
-	MenuItem registerNav, loginNav, changeProfileNav, eventNav, invitationNav;
-	MenuBar navBar;
-	
-	public String getOldPassword() {
-		return oldPassword;
-	}
-
-	public void setOldPassword(String oldPassword) {
-		this.oldPassword = oldPassword;
-	}
+		  productNameLbl, productDescLbl;
+    VBox invitationBottomBox, eventBottomBox, eventDetailBox;
+    TextField productNameTF;
+    TextArea productDescTF;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -73,22 +71,15 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 		arrangeComponent();
 		
 		this.stage = stage;
+		
 		this.stage.setTitle("Guest View");
-		this.stage.setResizable(false);
 		this.stage.setScene(scene);
 		this.stage.show();
 	}
 	
 	@Override
 	public void handle(ActionEvent e) {
-		if(e.getSource() == invitationNav) {
-			initInvitation();
-			arrangeInvitation();
-		} else if(e.getSource() == eventNav) {
-			initEvent();
-			arrangeEvent();
-			viewAcceptedEvents(email);
-		} else if(e.getSource() == acceptBtn) {
+		if(e.getSource() == acceptBtn) {
 			if(eventId == null) {
 				message = "Please select an event!";
 				messageLbl.setText(message);
@@ -96,7 +87,14 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 				return;
 			}
 			
-			acceptInvitation(getEventId(), getUserID());
+			acceptInvitation(getEventId(), getUserId());
+			
+		} else if(e.getSource() == invitationNav) {
+			viewInvitations();
+			
+		} else if(e.getSource() == eventNav) {
+			viewAcceptedEvents(email);
+			
 		} else if(e.getSource() == loginNav || e.getSource() == registerNav) {
 			UserView userView = new UserView();
 			
@@ -109,7 +107,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	        ChangeProfileView changeProfileView = new ChangeProfileView();
 	        
 	        try {
-	        	changeProfileView.setUserID(userID);
+	        	changeProfileView.setUserID(userId);
 	        	changeProfileView.setOldPassword(oldPassword);
 	        	changeProfileView.setEmail(email);
 	        	changeProfileView.setOldEmail(email);
@@ -127,10 +125,10 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 			public void handle(MouseEvent event) {
 				TableSelectionModel<Event> invitationTbm = invitationTable.getSelectionModel();
 				invitationTbm.setSelectionMode(SelectionMode.SINGLE);
-				Event selectedEvent = invitationTbm.getSelectedItem();
+				Event selectedInvitation = invitationTbm.getSelectedItem();
 				
-	            if (selectedEvent != null) {
-	                setEventId(selectedEvent.getEvent_id());
+	            if (selectedInvitation != null) {
+	                setEventId(selectedInvitation.getEvent_id());
 	            } else {
 	                message = "Please select a valid event!";
 	                messageLbl.setText(message);
@@ -144,7 +142,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 		return new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				TableSelectionModel<Event> eventTableTbm = eventTable.getSelectionModel();
+				TableSelectionModel<Event> eventTableTbm = acceptedEventTable.getSelectionModel();
 				eventTableTbm.setSelectionMode(SelectionMode.SINGLE);
 				Event selectedEvent = eventTableTbm.getSelectedItem();
 				
@@ -157,50 +155,57 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 				eventLocation.setText(selectedEvent.getEvent_location());
 				eventDesc.setText(selectedEvent.getEvent_description());
 				
-				initDetail();
+				borderContainer.setCenter(eventDetailBox);
 			}
 		};
 	}
 	
 	public void init() {
 		stage = new Stage();
-		profileMenu = new Menu("Profile");
-		registerNav = new MenuItem("Register");
-		registerNav.setOnAction(this);
-		loginNav = new MenuItem("Login");
-		loginNav.setOnAction(this);
-		changeProfileNav = new MenuItem("Change Profile");
-		changeProfileNav.setOnAction(this);
-		borderContainer = new BorderPane();
-		scene = new Scene(borderContainer, 1280, 720);
 		navMenu = new Menu("Menu");
 		invitationNav = new MenuItem("Invitation");
 		invitationNav.setOnAction(this);
 		eventNav = new MenuItem("Event");
 		eventNav.setOnAction(this);
+        profileMenu = new Menu("Profile");
+        registerNav = new MenuItem("Register");
+        registerNav.setOnAction(this);
+        loginNav = new MenuItem("Login");
+        loginNav.setOnAction(this);
+        changeProfileNav = new MenuItem("Change Profile");
+        changeProfileNav.setOnAction(this);
 		navBar = new MenuBar();
 		
 		borderContainer = new BorderPane();
 		eventDetailContainer = new GridPane();
 		invitationTable = new TableView<Event>();
-		eventTable = new TableView<Event>();
+		acceptedEventTable = new TableView<Event>();
 		invitations = new Vector<Event>();
-		events = new Vector<Event>();
+		acceptedEvents = new Vector<Event>();
 		messageLbl = new Label("");
 		scene = new Scene(borderContainer, 1280, 720);
+		eventDetailBox = new VBox();
 		
 		acceptBtn = new Button("Accept");
 		acceptBtn.setOnAction(this);
 		
+		productNameTF = new TextField();
+		productDescTF = new TextArea();
 		productNameLbl = new Label("Product Name: ");
 		productDescLbl = new Label("Product Description: ");
 		
 		invitationBottomBox = new VBox();
 		eventBottomBox = new VBox();
-	}
-	
-	public void initInvitation() {
-		invitationTable.getColumns().clear();
+		
+		eventDetailTitle = new Label("Event Detail");
+		eventNameLbl = new Label("Event Name: ");
+		eventName = new Label("");
+		eventDateLbl = new Label("Event Date: ");
+		eventDate = new Label("");
+		eventLocationLbl = new Label("Event Location: ");
+		eventLocation = new Label("");
+		eventDescLbl = new Label("Event Description: ");
+		eventDesc = new Label("");
 		
 		TableColumn<Event, String> id = new TableColumn("Event ID");
 		id.setCellValueFactory(new PropertyValueFactory<>("event_id"));
@@ -222,13 +227,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 		organizerCol.setMinWidth(50);
 		
 		invitationTable.getColumns().addAll(id, eventCol, dateCol, locationCol, descCol, organizerCol);
-		invitationTable.setOnMouseClicked(invitationTableMouseEvent());
-		refreshTable();
-	}
-	
-	public void initEvent() {
-		eventTable.getColumns().clear();
-		 
+		
 		TableColumn<Event, String> acceptedEventIdCol = new TableColumn("ID");
 		acceptedEventIdCol.setCellValueFactory(new PropertyValueFactory<>("event_id"));
 		acceptedEventIdCol.setMinWidth(100);
@@ -248,26 +247,31 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 		acceptedOrganizerCol.setCellValueFactory (new PropertyValueFactory<>("organizer_id"));
 		acceptedOrganizerCol.setMinWidth(100);
 		
-		eventTable.getColumns().addAll(acceptedEventIdCol, acceptedEventName, acceptedEventDateCol, acceptedEventLocationCol, acceptedDescCol, acceptedOrganizerCol);
-		eventTable.setOnMouseClicked(eventTableMouseEvent());
-		refreshTable();
+		acceptedEventTable.getColumns().addAll(acceptedEventIdCol, acceptedEventName, acceptedEventDateCol, acceptedEventLocationCol, acceptedDescCol, acceptedOrganizerCol);
+		
+		invitationTable.setOnMouseClicked(invitationTableMouseEvent());
+		acceptedEventTable.setOnMouseClicked(eventTableMouseEvent());
+		refreshInvitationTable();
 	}
 	
-	public void initDetail() {
-		eventDetailContainer = new GridPane();
-		eventDetailTitle = new Label("Event Detail");
-		eventNameLbl = new Label("Event Name: ");
-		eventName = new Label("");
-		eventDateLbl = new Label("Event Date: ");
-		eventDate = new Label("");
-		eventLocationLbl = new Label("Event Location: ");
-		eventLocation = new Label("");
-		eventDescLbl = new Label("Event Description: ");
-		eventDesc = new Label("");
-		eventDetailBox = new VBox();
+	public void arrangeComponent() {
+		navMenu.getItems().add(invitationNav);
+		navMenu.getItems().add(eventNav);
 		
-		borderContainer.setCenter(eventDetailBox);
+		profileMenu.getItems().add(registerNav);
+		profileMenu.getItems().add(loginNav);
+		profileMenu.getItems().add(changeProfileNav);
 		
+		navBar.getMenus().add(navMenu);
+		navBar.getMenus().add(profileMenu);
+		
+	    invitationBottomBox.getChildren().add(messageLbl);
+	    invitationBottomBox.getChildren().add(acceptBtn);
+	    invitationBottomBox.setAlignment(Pos.CENTER);
+	    invitationBottomBox.setPadding(new Insets(10));
+
+	    borderContainer.setTop(navBar);
+	    
 	    eventDetailTitle.setFont(new Font("Verdana", 24));
 	    eventDetailTitle.setStyle("-fx-font-weight: bold");
 	    
@@ -277,7 +281,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	    eventDateLbl.setFont(new Font("Verdana", 16));
 	    eventDateLbl.setStyle("-fx-font-weight: bold");
 	    
-	    eventLocationLbl.setFont(new Font("Verdana", 6));
+	    eventLocationLbl.setFont(new Font("Verdana", 16));
 	    eventLocationLbl.setStyle("-fx-font-weight: bold");
 	    
 	    eventDescLbl.setFont(new Font("Verdana", 16));
@@ -304,93 +308,75 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	    eventDetailBox.setMargin(eventDetailTitle, new Insets(10, 10, 10, 10));
 	    
 	    eventDetailBox.getChildren().add(eventDetailContainer);
-	    
 	    eventDetailBox.setAlignment(Pos.CENTER);
 	}
 	
-	public void arrangeComponent() {
-		navMenu.getItems().add(invitationNav);
-		navMenu.getItems().add(eventNav);
-		profileMenu.getItems().add(registerNav);
-		profileMenu.getItems().add(loginNav);
-		profileMenu.getItems().add(changeProfileNav);
-		
-		navBar.getMenus().add(navMenu);
-		navBar.getMenus().add(profileMenu);
-		
-		borderContainer.setTop(navBar);
-	}
-	
-	public void arrangeInvitation() {
-		borderContainer.setCenter(invitationTable);
-
-		invitationBottomBox.getChildren().add(messageLbl);
-		invitationBottomBox.getChildren().add(acceptBtn);
-		invitationBottomBox.setAlignment(Pos.CENTER);
-		borderContainer.setBottom(invitationBottomBox);
-	}
-	
-	public void arrangeEvent() {
-		borderContainer.setCenter(eventTable);
-		
-		eventBottomBox.setAlignment(Pos.CENTER);
-		borderContainer.setBottom(eventBottomBox);
-	}
-	
-	public void refreshTable() {
+	public void refreshInvitationTable() {
 		getInvitations(email);
 	    ObservableList<Event> regInvObs = FXCollections.observableArrayList(invitations);
 	    invitationTable.setItems(regInvObs);
-	    
-	    viewAcceptedEvents(email);
-	    ObservableList<Event> regEvObs = FXCollections.observableArrayList(events);
-	    eventTable.setItems(regEvObs);
+	}
+	
+	public void refreshAcceptedEventTable(){
+	    getAcceptedEvents(email);
+	    ObservableList<Event> regEvObs = FXCollections.observableArrayList(acceptedEvents);
+	    acceptedEventTable.setItems(regEvObs);
+	}
+	
+	public void getInvitations(String email) {
+		invitations.removeAllElements();
+		invitations = guestController.getInvitations(email);
 	}
 	
 	public void acceptInvitation(String eventID, String userID) {
 		message = guestController.acceptInvitation(eventID, userID);
 		messageLbl.setText(message);
 		messageLbl.setTextFill(Color.GREEN);
-		refreshTable();
+		refreshInvitationTable();
 	}
 	
-	public void getInvitations(String email) {
-		invitations.removeAllElements();
-		invitations = invitationController.getInvitations(email);
-		
+	public void viewInvitations() {
+		refreshInvitationTable();
 		borderContainer.setCenter(invitationTable);
 		borderContainer.setBottom(invitationBottomBox);
 	}
 	
-	public void viewAcceptedEvents(String email) {
-		events.removeAllElements();
-		events = guestController.viewAcceptedEvents(email);
-		
-		borderContainer.setCenter(eventTable);
-		borderContainer.setBottom(eventBottomBox);
+	public void getAcceptedEvents(String email) {
+		acceptedEvents.removeAllElements();
+		acceptedEvents = guestController.viewAcceptedEvents(email);
 	}
 	
-	public String getEmail() {
-		return email;
+	public void viewAcceptedEvents(String email) {
+		refreshAcceptedEventTable();
+		borderContainer.setCenter(acceptedEventTable);
+		borderContainer.setBottom(eventBottomBox);
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-	public String getUserID() {
-		return userID;
-	}
-
-	public void setUserID(String userID) {
-		this.userID = userID;
-	}
-	
 	public String getEventId() {
 		return eventId;
 	}
 
 	public void setEventId(String eventId) {
 		this.eventId = eventId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
 	}
 }
