@@ -147,6 +147,11 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 	public void changeProfile(String userID, String email, String name, String oldPassword, String newPassword) {
 		String message = userController.changeProfile(userID, email, name, oldPassword, newPassword);
 		messageLbl.setText(message);
+		
+		if(message.equals("Change Profile Successful!")) {
+			setUserEmail(email);
+		}
+		
 		clearForm();
 	}
 	
