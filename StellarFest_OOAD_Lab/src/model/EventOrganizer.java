@@ -91,13 +91,13 @@ public class EventOrganizer extends User{
 		
 	}
 	
-//	public static Vector<Guest> getGuestsByTransactionID(String eventID) {
-//		
-//	}
-//	
-//	public static Vector<Vendor> getVendorsByTransactionID(String eventID) {
-//		
-//	}
+	public static Vector<Guest> getGuestsByTransactionID(String eventID) {
+		return null;
+	}
+	
+	public static Vector<Vendor> getVendorsByTransactionID(String eventID) {
+		return null;
+	}
 	
 	public void checkCreateEventInput(String eventName, String date, String location, String description) {
 			

@@ -57,8 +57,10 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 			loginUser();
 		} else if(e.getSource() == toLoginBtn) {
 			switchToLoginPage(stage);
+			clearFormField();
 		} else if(e.getSource() == toRegisBtn) {
 			switchToRegisPage(stage);
+			clearFormField();
 		}
 	}
 	
@@ -183,7 +185,6 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 	public void arrangeForm() {
 		bp.setPadding(new Insets(50));
 		
-		// Top
 		gp.setAlignment(Pos.CENTER);
 		logoLbl.setFont(new Font("Verdana", 32));
 		logoLbl.setStyle("-fx-font-weight: bold;");
@@ -192,8 +193,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 	    GridPane.setValignment(titleLbl, javafx.geometry.VPos.CENTER);
 		gp.setVgap(20);
 		gp.setHgap(20);
-	
-		// Center
+
 		formContainer.setAlignment(Pos.CENTER);
 		formContainer.setPadding(new Insets(50));
 		usernameTF.setMinWidth(200);
@@ -214,7 +214,6 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		emailLbl.setFont(new Font("Verdana", 16));
 		roleLbl.setFont(new Font("Verdana", 16));
 		
-		// Bottom
 		btnContainer.setVgap(20);
 		btnContainer.setAlignment(Pos.CENTER);
 		fp.setAlignment(Pos.CENTER);
@@ -240,7 +239,6 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 	}
 	
 	private void loginUser() {
-	    
 	    String email = emailTF.getText();
 	    String password = passwordPF.getText();
 	    String role = "";
@@ -281,6 +279,13 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 	    formContainer.getChildren().clear();
 	    btnContainer.getChildren().clear();
 	    fp.getChildren().clear();
+	}
+	
+	private void clearFormField() {
+		emailTF.setText("");
+		usernameTF.setText("");
+		passwordPF.setText("");
+		rolesCB.setValue(null);
 	}
 	
 	private void switchToRegisPage(Stage s) {

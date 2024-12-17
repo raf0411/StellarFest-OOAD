@@ -23,6 +23,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableSelectionModel;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -67,7 +68,8 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	Label eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, guestAttendeesLbl, vendorAttendeesLbl,
 		  eventName, eventDate, eventLocation, eventDesc, guestAttendees, vendorAttendees, messageLbl, vendorMessageLbl, guestMessageLbl;
 	Button addVendorBtn, addGuestsBtn,editEventBtn, confirmEditBtn, saveEventBtn, addBtn, addGuestBtn;
-	TextField eventNameTF, eventLocationTF, eventDescTF;
+	TextField eventNameTF, eventLocationTF;
+	TextArea eventDescTF;
 	DatePicker eventDateDP;
 	
 	public String getOldPassword() {
@@ -270,7 +272,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		createEventForm = new GridPane();
 		eventDateDP = new DatePicker();
 		eventLocationTF = new TextField();
-		eventDescTF = new TextField();
+		eventDescTF = new TextArea();
 		
 		addVendorBtn = new Button("Add Vendor");
 		addVendorBtn.setOnAction(this);

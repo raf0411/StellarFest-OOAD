@@ -86,10 +86,12 @@ public class Vendor extends User{
 	public Vector<Vendor> getVendors(){
 		Vector<Vendor> vendors = new Vector<Vendor>();
 		
+    	String query = "SELECT * FROM users WHERE user_role = ?";
+        PreparedStatement ps = db.prepareStatement(query);
+        
         try {
-        	String query = "SELECT * FROM users WHERE user_role = 'Vendor'";
-            
-            PreparedStatement ps = db.prepareStatement(query);
+        	ps.setString(1, "Vendor");
+        	
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

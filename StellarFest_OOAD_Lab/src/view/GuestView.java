@@ -3,7 +3,6 @@ package view;
 import java.util.Vector;
 
 import controller.GuestController;
-import controller.InvitationController;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,8 +20,6 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableSelectionModel;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -36,8 +33,7 @@ import model.Event;
 
 public class GuestView extends Application implements EventHandler<ActionEvent>{
 	private GuestController guestController = new GuestController();
-	private InvitationController invitationController = new InvitationController();
-	
+
 	private String email;
 	private String userId;
 	private String eventId;
