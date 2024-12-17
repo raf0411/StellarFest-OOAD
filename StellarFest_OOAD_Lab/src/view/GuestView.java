@@ -59,11 +59,8 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	Vector<Event> invitations;
 	Vector<Event> acceptedEvents;
 	Label messageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
-		  eventName, eventDate, eventLocation, eventDesc,
-		  productNameLbl, productDescLbl;
+		  eventName, eventDate, eventLocation, eventDesc;
     VBox invitationBottomBox, eventBottomBox, eventDetailBox;
-    TextField productNameTF;
-    TextArea productDescTF;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -188,11 +185,6 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 		
 		acceptBtn = new Button("Accept");
 		acceptBtn.setOnAction(this);
-		
-		productNameTF = new TextField();
-		productDescTF = new TextArea();
-		productNameLbl = new Label("Product Name: ");
-		productDescLbl = new Label("Product Description: ");
 		
 		invitationBottomBox = new VBox();
 		eventBottomBox = new VBox();
