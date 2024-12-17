@@ -57,6 +57,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	BorderPane borderContainer;
 	GridPane eventDetailContainer, editEventForm, createEventForm;
 	VBox vb, btnEditDetailVB, btnCreateVB, vendorBtnBox, guestBtnBox;
+	HBox eventDetailBtnBox;
 	Menu navMenu, profileMenu;
 	MenuItem registerItem, loginItem, changeProfileItem, eventItem, createEventItem;
 	MenuBar navBar;
@@ -200,6 +201,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	}
 	
 	public void init() {
+		eventDetailBtnBox = new HBox();
 		vendorBtnBox = new VBox();
 		btnEditDetailVB = new VBox();
 		btnCreateVB = new VBox();
@@ -343,10 +345,10 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		guestBtnBox.getChildren().add(addGuestBtn);
 		guestBtnBox.setAlignment(Pos.CENTER);
 		
-		vb.getChildren().clear();
-		vb.getChildren().add(addVendorBtn);
-		vb.getChildren().add(addGuestsBtn);
-		vb.setAlignment(Pos.CENTER);
+		eventDetailBtnBox.getChildren().addAll(editEventBtn, addVendorBtn, addGuestsBtn);
+		eventDetailBtnBox.setAlignment(Pos.CENTER);
+		
+		borderContainer.setMargin(eventDetailBtnBox, new Insets(10));
 		
 		borderContainer.setTop(navBar);
 		borderContainer.setBottom(vb);
@@ -397,11 +399,8 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		guestAttendees.setText(tempEvent.getGuests().toString());
 		vendorAttendees.setText(tempEvent.getVendors().toString());
 		
-		btnEditDetailVB.getChildren().clear();
-		btnEditDetailVB.getChildren().add(editEventBtn);
-		
 		borderContainer.setCenter(eventDetailContainer);
-		borderContainer.setBottom(btnEditDetailVB);
+		borderContainer.setBottom(eventDetailBtnBox);
 	}
 	
 	public void viewAddVendors() {

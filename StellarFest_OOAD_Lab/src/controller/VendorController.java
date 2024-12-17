@@ -35,4 +35,10 @@ public class VendorController {
 
 		return true;
 	}
+	
+	public Vector<Event> getInvitations(String email) {
+		Vector<Event> invitations = invitation.getInvitations(email);
+		
+		return invitations;
+	}
 }

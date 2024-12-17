@@ -14,6 +14,7 @@ public class Invitation {
 	private String user_id;
 	private String invitation_status;
 	private String invitation_role;
+	
 	private Database db = Database.getInstance();
 	private User user = new User();
 	
@@ -106,31 +107,30 @@ public class Invitation {
 	
 	public Vector<Event> getInvitations(String email) {
 		Vector<Event> invitations = new Vector<Event>();
-		String query = "SELECT events.event_id, " +
-		               "events.event_name, " +
-		               "events.event_date, " +
-		               "events.event_location, " +
-		               "events.event_description, " +
-		               "users.user_id " +
+		String query = "SELECT events.event_id, events.event_name, events.event_date, events.event_location, " +
+		               "events.event_description, events.organizer_id, invitation.invitation_id, " +
+		               "invitation.invitation_status, invitation.invitation_role, users.user_id, users.email " +
 		               "FROM invitation " +
-		               "JOIN events ON invitation.event_id = events.event_id " +
-		               "JOIN users ON invitation.user_id = users.user_id " + 
-		               "WHERE users.user_email = '"+ email +"' " +
-		               "AND invitation.invitation_status != 'Accepted'";
+		               "INNER JOIN events ON invitation.event_id = events.event_id " +
+		               "INNER JOIN users ON invitation.user_id = users.user_id " +
+		               "WHERE users.user_email = ?";
 		
-		db.resultSet = db.execQuery(query);
+		PreparedStatement ps = db.prepareStatement(query);
 		
 		try {
-			while(db.resultSet.next()) {
-				String eventId = db.resultSet.getString("events.event_id");
-				String eventName = db.resultSet.getString("events.event_name");
-				String eventDate = db.resultSet.getString("events.event_date");
-				String eventLocation = db.resultSet.getString("events.event_location");
-				String eventDescription = db.resultSet.getString("events.event_description");
-				String organizerId = db.resultSet.getString("users.user_id");
+			ps.setString(1, email);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				String eventID = rs.getString("event_id");
+				String eventDate = rs.getString("event_date");
+				String eventLocation = rs.getString("event_location");
+				String eventDescription = rs.getString("event_description");
+				String eventOrganizerID = rs.getString("organizer_id");
 				
-				invitations.add(new Event(eventId, eventName, eventDate, eventLocation, eventDescription, organizerId));
+				invitations.add(new Event(eventDate, eventID, eventID, eventLocation, eventDescription, eventOrganizerID));
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

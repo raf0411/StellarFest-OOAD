@@ -141,10 +141,10 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 			public void handle(MouseEvent event) {
 				TableSelectionModel<Event> invitationTbm = invitationTable.getSelectionModel();
 				invitationTbm.setSelectionMode(SelectionMode.SINGLE);
-				Event selectedEvent = invitationTbm.getSelectedItem();
+				Event selectedInvitation = invitationTbm.getSelectedItem();
 				
-	            if (selectedEvent != null) {
-	                setEventId(selectedEvent.getEvent_id());
+	            if (selectedInvitation != null) {
+	                setEventId(selectedInvitation.getEvent_id());
 	            } else {
 	                message = "Please select a valid event!";
 	                messageLbl.setText(message);
@@ -272,7 +272,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		
 		invitationTable.setOnMouseClicked(invitationTableMouseEvent());
 		eventTable.setOnMouseClicked(eventTableMouseEvent());
-		refreshTable();
+		refreshInvitationTable();
 	}
 	
 	public void initManageVendor() {
@@ -370,11 +370,13 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	    eventDetailBox.setAlignment(Pos.CENTER);
 	}
 	
-	public void refreshTable() {
+	public void refreshInvitationTable() {
 		getInvitations(email);
 	    ObservableList<Event> regInvObs = FXCollections.observableArrayList(invitations);
 	    invitationTable.setItems(regInvObs);
-	    
+	}
+	
+	public void refreshAcceptedEventTable(){
 	    viewAcceptedEvents(email);
 	    ObservableList<Event> regEvObs = FXCollections.observableArrayList(events);
 	    eventTable.setItems(regEvObs);
@@ -382,17 +384,20 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	
 	public void getInvitations(String email) {
 		invitations.removeAllElements();
-		invitations = invitationController.getInvitations(email);
-		
-		borderContainer.setCenter(invitationTable);
-		borderContainer.setBottom(invitationBottomBox);
+		invitations = vendorController.getInvitations(email);
 	}
 	
 	public void acceptInvitation(String eventID, String userID, String invitationRole) {
+		refreshInvitationTable();
 		message = vendorController.acceptInvitation(eventID, userID, invitationRole);
 		messageLbl.setText(message);
 		messageLbl.setTextFill(Color.GREEN);
-		refreshTable();
+	}
+	
+	public void viewInvitations() {
+		refreshInvitationTable();
+		borderContainer.setCenter(invitationTable);
+		borderContainer.setBottom(invitationBottomBox);
 	}
 	
 	public void viewAcceptedEvents(String email) {
