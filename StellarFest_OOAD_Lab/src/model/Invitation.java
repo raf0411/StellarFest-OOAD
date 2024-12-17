@@ -54,24 +54,25 @@ public class Invitation {
 	}
 	
 	// Salah Ini
-	public String acceptInvitation(String eventID, String userID, String invitationRole) {
+	public String acceptInvitation(String eventID, String userID) {
 	    Invitation invitation;
-	    String invitationID = RandomIDGenerator.generateUniqueID();
-	    
-	    invitation = new Invitation(invitationID, eventID, userID, "Accepted", invitationRole);
 	    String message = "Invitation Accepted!";
 	    
-	    String query = "INSERT INTO invitation " +
-	                   "VALUES ('"+ invitationID +"', '"+ eventID +"', '"+ userID +"', '"+ "Accepted" +"', '"+ invitationRole +"')";
+	    String query = "UPDATE invitation\r\n"
+	    		     + "SET invitation_status = ?\r\n"
+	    		     + "WHERE event_id = ? AND user_id = ?";
 	    
-	    db.execUpdate(query);
+	    PreparedStatement ps = db.prepareStatement(query);
 	    
-	    String queryDelete = "DELETE FROM invitation " +
-			                 "WHERE event_id = '" + eventID + "' " +
-			                 "AND user_id = '" + userID + "' " +
-			                 "AND invitation_status = 'Pending'";
-	    
-		db.execUpdate(queryDelete);
+	    try {
+			ps.setString(1, "Accepted");
+			ps.setString(2, eventID);
+			ps.setString(3, userID);
+			
+			ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	    
 	    return message;
 	}
@@ -109,11 +110,11 @@ public class Invitation {
 		Vector<Event> invitations = new Vector<Event>();
 		String query = "SELECT events.event_id, events.event_name, events.event_date, events.event_location, " +
 		               "events.event_description, events.organizer_id, invitation.invitation_id, " +
-		               "invitation.invitation_status, invitation.invitation_role, users.user_id, users.email " +
+		               "invitation.invitation_status, invitation.invitation_role, users.user_id, users.user_email " +
 		               "FROM invitation " +
 		               "INNER JOIN events ON invitation.event_id = events.event_id " +
 		               "INNER JOIN users ON invitation.user_id = users.user_id " +
-		               "WHERE users.user_email = ?";
+		               "WHERE users.user_email = ? AND invitation.invitation_status = 'Pending'";
 		
 		PreparedStatement ps = db.prepareStatement(query);
 		
@@ -122,19 +123,20 @@ public class Invitation {
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				String eventID = rs.getString("event_id");
-				String eventDate = rs.getString("event_date");
-				String eventLocation = rs.getString("event_location");
-				String eventDescription = rs.getString("event_description");
-				String eventOrganizerID = rs.getString("organizer_id");
+				String eventID = rs.getString("events.event_id");
+				String eventName = rs.getString("events.event_name");
+				String eventDate = rs.getString("events.event_date");
+				String eventLocation = rs.getString("events.event_location");
+				String eventDescription = rs.getString("events.event_description");
+				String eventOrganizerID = rs.getString("events.organizer_id");
 				
-				invitations.add(new Event(eventDate, eventID, eventID, eventLocation, eventDescription, eventOrganizerID));
+				invitations.add(new Event(eventID, eventName, eventDate, eventLocation, eventDescription, eventOrganizerID));
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return invitations;
 	}
 	

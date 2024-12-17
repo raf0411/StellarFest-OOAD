@@ -55,9 +55,9 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	GridPane eventDetailContainer, manageVendorContainer;
 	Button acceptBtn, manageVendorBtn, saveBtn;
 	TableView<Event> invitationTable;
-	TableView<Event> eventTable;
+	TableView<Event> acceptedEventTable;
 	Vector<Event> invitations;
-	Vector<Event> events;
+	Vector<Event> acceptedEvents;
 	Label messageLbl, eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, eventDetailTitle,
 		  eventName, eventDate, eventLocation, eventDesc,
 		  productNameLbl, productDescLbl, manageVendorTitle;
@@ -94,10 +94,10 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 				return;
 			}
 			
-			acceptInvitation(getEventId(), getUserId(), "Vendor");
+			acceptInvitation(getEventId(), getUserId());
 			
 		} else if(e.getSource() == invitationNav) {
-			getInvitations(email);
+			viewInvitations();
 			
 		} else if(e.getSource() == eventNav) {
 			viewAcceptedEvents(email);
@@ -158,7 +158,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		return new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				TableSelectionModel<Event> eventTableTbm = eventTable.getSelectionModel();
+				TableSelectionModel<Event> eventTableTbm = acceptedEventTable.getSelectionModel();
 				eventTableTbm.setSelectionMode(SelectionMode.SINGLE);
 				Event selectedEvent = eventTableTbm.getSelectedItem();
 				
@@ -197,9 +197,9 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		borderContainer = new BorderPane();
 		eventDetailContainer = new GridPane();
 		invitationTable = new TableView<Event>();
-		eventTable = new TableView<Event>();
+		acceptedEventTable = new TableView<Event>();
 		invitations = new Vector<Event>();
-		events = new Vector<Event>();
+		acceptedEvents = new Vector<Event>();
 		messageLbl = new Label("");
 		scene = new Scene(borderContainer, 1280, 720);
 		eventDetailBox = new VBox();
@@ -268,10 +268,10 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		acceptedOrganizerCol.setCellValueFactory (new PropertyValueFactory<>("organizer_id"));
 		acceptedOrganizerCol.setMinWidth(100);
 		
-		eventTable.getColumns().addAll(acceptedEventIdCol, acceptedEventName, acceptedEventDateCol, acceptedEventLocationCol, acceptedDescCol, acceptedOrganizerCol);
+		acceptedEventTable.getColumns().addAll(acceptedEventIdCol, acceptedEventName, acceptedEventDateCol, acceptedEventLocationCol, acceptedDescCol, acceptedOrganizerCol);
 		
 		invitationTable.setOnMouseClicked(invitationTableMouseEvent());
-		eventTable.setOnMouseClicked(eventTableMouseEvent());
+		acceptedEventTable.setOnMouseClicked(eventTableMouseEvent());
 		refreshInvitationTable();
 	}
 	
@@ -377,9 +377,9 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	}
 	
 	public void refreshAcceptedEventTable(){
-	    viewAcceptedEvents(email);
-	    ObservableList<Event> regEvObs = FXCollections.observableArrayList(events);
-	    eventTable.setItems(regEvObs);
+	    getAcceptedEvents(email);
+	    ObservableList<Event> regEvObs = FXCollections.observableArrayList(acceptedEvents);
+	    acceptedEventTable.setItems(regEvObs);
 	}
 	
 	public void getInvitations(String email) {
@@ -387,11 +387,11 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		invitations = vendorController.getInvitations(email);
 	}
 	
-	public void acceptInvitation(String eventID, String userID, String invitationRole) {
-		refreshInvitationTable();
-		message = vendorController.acceptInvitation(eventID, userID, invitationRole);
+	public void acceptInvitation(String eventID, String userID) {
+		message = vendorController.acceptInvitation(eventID, userID);
 		messageLbl.setText(message);
 		messageLbl.setTextFill(Color.GREEN);
+		refreshInvitationTable();
 	}
 	
 	public void viewInvitations() {
@@ -400,11 +400,14 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		borderContainer.setBottom(invitationBottomBox);
 	}
 	
+	public void getAcceptedEvents(String email) {
+		acceptedEvents.removeAllElements();
+		acceptedEvents = vendorController.viewAcceptedEvents(email);
+	}
+	
 	public void viewAcceptedEvents(String email) {
-		events.removeAllElements();
-		events = vendorController.viewAcceptedEvents(email);
-		
-		borderContainer.setCenter(eventTable);
+		refreshAcceptedEventTable();
+		borderContainer.setCenter(acceptedEventTable);
 		borderContainer.setBottom(eventBottomBox);
 	}
 	

@@ -62,7 +62,7 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		            vendorView.setEmail(this.email);
 		            vendorView.setUserId(userID);
 		            vendorView.start(this.stage);  
-		            vendorView.refreshTable();     
+		            vendorView.refreshInvitationTable();     
 		        }
 		    } catch (Exception ex) {
 		        ex.printStackTrace();

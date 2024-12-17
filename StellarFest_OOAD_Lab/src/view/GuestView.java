@@ -96,7 +96,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 				return;
 			}
 			
-			acceptInvitation(getEventId(), getUserID(), "Guest");
+			acceptInvitation(getEventId(), getUserID());
 		} else if(e.getSource() == loginNav || e.getSource() == registerNav) {
 			UserView userView = new UserView();
 			
@@ -347,8 +347,8 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	    eventTable.setItems(regEvObs);
 	}
 	
-	public void acceptInvitation(String eventID, String userID, String invitationRole) {
-		message = guestController.acceptInvitation(eventID, userID, invitationRole);
+	public void acceptInvitation(String eventID, String userID) {
+		message = guestController.acceptInvitation(eventID, userID);
 		messageLbl.setText(message);
 		messageLbl.setTextFill(Color.GREEN);
 		refreshTable();

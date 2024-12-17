@@ -11,8 +11,8 @@ public class GuestController {
 	private Event event = new Event();
 	private Invitation invitation = new Invitation();
 	
-	public String acceptInvitation(String eventID, String userID, String invitationRole) {
-		String message = invitation.acceptInvitation(eventID, userID, invitationRole);
+	public String acceptInvitation(String eventID, String userID) {
+		String message = invitation.acceptInvitation(eventID, userID);
 		
 		return message;
 	}

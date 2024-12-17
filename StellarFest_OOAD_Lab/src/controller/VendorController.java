@@ -11,8 +11,8 @@ public class VendorController {
 	Event event = new Event();
 	Vendor vendor = new Vendor();
 	
-	public String acceptInvitation(String eventID, String userID, String invitationRole) {
-		return invitation.acceptInvitation(eventID, userID, invitationRole);
+	public String acceptInvitation(String eventID, String userID) {
+		return invitation.acceptInvitation(eventID, userID);
 	}
 	
 	public Vector<Event> viewAcceptedEvents(String email) {
