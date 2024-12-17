@@ -70,44 +70,87 @@ public class User {
 		}
 	}
 	
-	public void changeProfile(String userID, String email, String name, String oldPassword, String newPassword) {
-	    StringBuilder query = new StringBuilder("UPDATE users SET ");
-	    boolean first = true;
-
-	    if (!name.isEmpty()) {
-	        query.append("user_name = ?");
-	        first = false;
+	public String changeProfile(String userID, String email, String name, String oldPassword, String newPassword) {
+	    String message = "Change Profile Successful!";
+	    String query = "";
+	    
+	    if (email.isEmpty() && name.isEmpty() && newPassword.isEmpty()) {
+	        return "No changes made!";
 	    }
-	    if (!email.isEmpty()) {
-	        if (!first) query.append(", ");
-	        query.append("user_email = ?");
-	        first = false;
-	    }
-	    if (!newPassword.isEmpty()) {
-	        if (!first) query.append(", ");
-	        query.append("user_password = ?");
-	    }
-	    query.append(" WHERE user_id = ?");
-
-	    try (PreparedStatement ps = db.prepareStatement(query.toString())) {
-	        int index = 1;
-
-	        if (!name.isEmpty()) {
-	            ps.setString(index++, name);
+	    
+	    if (!email.isEmpty() && !name.isEmpty() && !newPassword.isEmpty()) {
+	        query = "UPDATE users SET user_email = ?, user_name = ?, user_password = ? WHERE user_id = ?";
+	        try (PreparedStatement ps = db.prepareStatement(query)) {
+	            ps.setString(1, email);
+	            ps.setString(2, name);
+	            ps.setString(3, newPassword);
+	            ps.setString(4, userID);
+	            ps.execute();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
 	        }
-	        if (!email.isEmpty()) {
-	            ps.setString(index++, email);
+	    } else if (!email.isEmpty() && !name.isEmpty() && newPassword.isEmpty()) {
+	        query = "UPDATE users SET user_email = ?, user_name = ? WHERE user_id = ?";
+	        try (PreparedStatement ps = db.prepareStatement(query)) {
+	            ps.setString(1, email);
+	            ps.setString(2, name);
+	            ps.setString(3, userID);
+	            ps.execute();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
 	        }
-	        if (!newPassword.isEmpty()) {
-	            ps.setString(index++, newPassword);
+	    } else if (!email.isEmpty() && name.isEmpty() && !newPassword.isEmpty()) {
+	        query = "UPDATE users SET user_email = ?, user_password = ? WHERE user_id = ?";
+	        try (PreparedStatement ps = db.prepareStatement(query)) {
+	            ps.setString(1, email);
+	            ps.setString(2, newPassword);
+	            ps.setString(3, userID);
+	            ps.execute();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
 	        }
-	        ps.setString(index, userID);
-
-	        ps.executeUpdate();
-	    } catch (SQLException e) {
-	        e.printStackTrace();
+	    } else if (email.isEmpty() && !name.isEmpty() && !newPassword.isEmpty()) {
+	        query = "UPDATE users SET user_name = ?, user_password = ? WHERE user_id = ?";
+	        try (PreparedStatement ps = db.prepareStatement(query)) {
+	            ps.setString(1, name);
+	            ps.setString(2, newPassword);
+	            ps.setString(3, userID);
+	            ps.execute();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    } else if (!email.isEmpty() && name.isEmpty() && newPassword.isEmpty()) {
+	        query = "UPDATE users SET user_email = ? WHERE user_id = ?";
+	        try (PreparedStatement ps = db.prepareStatement(query)) {
+	            ps.setString(1, email);
+	            ps.setString(2, userID);
+	            ps.execute();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    } else if (email.isEmpty() && !name.isEmpty() && newPassword.isEmpty()) {
+	        query = "UPDATE users SET user_name = ? WHERE user_id = ?";
+	        try (PreparedStatement ps = db.prepareStatement(query)) {
+	            ps.setString(1, name);
+	            ps.setString(2, userID);
+	            ps.execute();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    } else if (email.isEmpty() && name.isEmpty() && !newPassword.isEmpty()) {
+	        query = "UPDATE users SET user_password = ? WHERE user_id = ?";
+	        try (PreparedStatement ps = db.prepareStatement(query)) {
+	            ps.setString(1, newPassword);
+	            ps.setString(2, userID);
+	            ps.execute();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
 	    }
+	    
+	    return message;
 	}
+
 
 	
 	public User getUserByEmail(String email) {

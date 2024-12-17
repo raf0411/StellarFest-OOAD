@@ -126,11 +126,7 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 	        ChangeProfileView changeProfileView = new ChangeProfileView();
 	        
 	        try {
-	        	changeProfileView.setUserID(userId);
-	        	changeProfileView.setOldPassword(oldPassword);
-	        	changeProfileView.setEmail(email);
-	        	changeProfileView.setOldEmail(email);
-	        	changeProfileView.setRole("Vendor");
+	        	changeProfileView.setUserEmail(email);
 	            changeProfileView.start(this.stage);
 	        } catch (Exception ex) {
 	            ex.printStackTrace();

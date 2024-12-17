@@ -110,11 +110,6 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	        ChangeProfileView changeProfileView = new ChangeProfileView();
 	        
 	        try {
-	        	changeProfileView.setUserID(userID);
-	        	changeProfileView.setOldPassword(oldPassword);
-	        	changeProfileView.setEmail(email);
-	        	changeProfileView.setOldEmail(email);
-	        	changeProfileView.setRole("Event Organizer");
 	            changeProfileView.start(this.stage);
 	        } catch (Exception ex) {
 	            ex.printStackTrace();
