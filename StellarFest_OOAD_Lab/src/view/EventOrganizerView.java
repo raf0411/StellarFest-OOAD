@@ -42,9 +42,10 @@ import model.Vendor;
 public class EventOrganizerView extends Application implements EventHandler<ActionEvent>{
 	private EventOrganizerController eventOrganizerController = new EventOrganizerController();
 	private EventController eventController = new EventController();
-	private String userID;
+	private String userID, tempInvitedUserEmail;
 	private Vector<Event> events;
 	private Vector<Vendor> vendors;
+	private Vector<Guest> guests;
 	private String tempEventID;
 	private String tempEventName;
 	private String message;
@@ -55,15 +56,16 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	Scene scene;
 	BorderPane borderContainer;
 	GridPane eventDetailContainer, editEventForm, createEventForm;
-	VBox vb, btnEditDetailVB, btnCreateVB;
+	VBox vb, btnEditDetailVB, btnCreateVB, vendorBtnBox, guestBtnBox;
 	Menu navMenu, profileMenu;
 	MenuItem registerItem, loginItem, changeProfileItem, eventItem, createEventItem;
 	MenuBar navBar;
 	TableView<Event> eventTable;
 	TableView<Vendor> vendorTable;
+	TableView<Guest> guestTable;
 	Label eventNameLbl, eventDateLbl, eventLocationLbl, eventDescLbl, guestAttendeesLbl, vendorAttendeesLbl,
-		  eventName, eventDate, eventLocation, eventDesc, guestAttendees, vendorAttendees, messageLbl;
-	Button addVendorBtn, editEventBtn, confirmEditBtn, saveEventBtn, addBtn;
+		  eventName, eventDate, eventLocation, eventDesc, guestAttendees, vendorAttendees, messageLbl, vendorMessageLbl, guestMessageLbl;
+	Button addVendorBtn, addGuestsBtn,editEventBtn, confirmEditBtn, saveEventBtn, addBtn, addGuestBtn;
 	TextField eventNameTF, eventLocationTF, eventDescTF;
 	DatePicker eventDateDP;
 	
@@ -122,11 +124,55 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
+		} else if(e.getSource() == addBtn) {
+			String message = eventOrganizerController.sendInvitation(tempInvitedUserEmail, tempEventID);
+			vendorMessageLbl.setText(message);
+		} else if(e.getSource() == addGuestsBtn) {
+			viewAddGuests();
+		} else if(e.getSource() == addGuestBtn) {
+			String message = eventOrganizerController.sendInvitation(tempInvitedUserEmail, tempEventID);
+			guestMessageLbl.setText(message);
 		}
 	}
 	
 	private EventHandler<MouseEvent> vendorTableMouseEvent() {		
-		return null;
+		return new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				TableSelectionModel<Vendor> vendorTsm = vendorTable.getSelectionModel();
+				vendorTsm.setSelectionMode(SelectionMode.SINGLE);
+				Vendor selectedVendor = vendorTsm.getSelectedItem();
+				
+				tempInvitedUserEmail = "";
+				
+				if(selectedVendor == null) {
+					return;
+				}
+				
+				tempInvitedUserEmail = selectedVendor.getUser_email();
+			}
+		};
+	}
+	
+	private EventHandler<MouseEvent> guestTableMouseEvent(){
+		return new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				TableSelectionModel<Guest> guestTsm = guestTable.getSelectionModel();
+				guestTsm.setSelectionMode(SelectionMode.SINGLE);
+				Guest selectedGuest = guestTsm.getSelectedItem();
+				
+				tempInvitedUserEmail = "";
+				
+				if(selectedGuest == null) {
+					return;
+				}
+				
+				tempInvitedUserEmail = selectedGuest.getUser_email();
+			}
+		};
 	}
 	
 	private EventHandler<MouseEvent> eventTableMouseEvent(){
@@ -154,6 +200,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	}
 	
 	public void init() {
+		vendorBtnBox = new VBox();
 		btnEditDetailVB = new VBox();
 		btnCreateVB = new VBox();
 		vendors = new Vector<Vendor>();
@@ -180,7 +227,21 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		saveEventBtn = new Button("Save Event");
 		saveEventBtn.setOnAction(this);
 		messageLbl = new Label();
+		vendorMessageLbl = new Label();
 		addBtn = new Button("Add");
+		addBtn.setOnAction(this);
+		guestBtnBox = new VBox();
+		
+		guestTable = new TableView<Guest>();
+		guests = new Vector<Guest>();
+		
+		addGuestsBtn = new Button("Add Guest");
+		addGuestsBtn.setOnAction(this);
+		
+		addGuestBtn = new Button("Add");
+		addGuestBtn.setOnAction(this);
+		
+		guestMessageLbl = new Label();
 		
 		events = new Vector<Event>();
 		stage = new Stage();
@@ -245,6 +306,21 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 
 		vendorTable.getColumns().addAll(vendorIdCol, vendorNameCol, vendorEmailCol);
 		vendorTable.setOnMouseClicked(vendorTableMouseEvent());
+		
+		TableColumn<Guest, String> guestIdCol = new TableColumn<>("Guest ID");
+		guestIdCol.setCellValueFactory(new PropertyValueFactory<>("user_id"));
+		guestIdCol.prefWidthProperty().bind(guestTable.widthProperty().multiply(0.34));
+
+		TableColumn<Guest, String> guestNameCol = new TableColumn<>("Guest Name");
+		guestNameCol.setCellValueFactory(new PropertyValueFactory<>("user_name"));
+		guestNameCol.prefWidthProperty().bind(guestTable.widthProperty().multiply(0.34));
+
+		TableColumn<Guest, String> guestEmailCol = new TableColumn<>("Guest Email");
+		guestEmailCol.setCellValueFactory(new PropertyValueFactory<>("user_email"));
+		guestEmailCol.prefWidthProperty().bind(guestTable.widthProperty().multiply(0.34));
+
+		guestTable.getColumns().addAll(guestIdCol, guestNameCol, guestEmailCol);
+		guestTable.setOnMouseClicked(guestTableMouseEvent());
 	}
 
 	public void arrange() {
@@ -259,8 +335,17 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		btnEditDetailVB.setAlignment(Pos.CENTER);
 		btnCreateVB.setAlignment(Pos.CENTER);
 		
+		vendorBtnBox.getChildren().add(vendorMessageLbl);
+		vendorBtnBox.getChildren().add(addBtn);
+		vendorBtnBox.setAlignment(Pos.CENTER);
+		
+		guestBtnBox.getChildren().add(guestMessageLbl);
+		guestBtnBox.getChildren().add(addGuestBtn);
+		guestBtnBox.setAlignment(Pos.CENTER);
+		
 		vb.getChildren().clear();
 		vb.getChildren().add(addVendorBtn);
+		vb.getChildren().add(addGuestsBtn);
 		vb.setAlignment(Pos.CENTER);
 		
 		borderContainer.setTop(navBar);
@@ -320,6 +405,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	}
 	
 	public void viewAddVendors() {
+		vendorMessageLbl.setText("");
 		vendors.removeAllElements();
 		vendors = eventOrganizerController.getVendors();
 		
@@ -327,6 +413,19 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	    vendorTable.setItems(vendorRegObs);
 	    
 	    borderContainer.setCenter(vendorTable);
+	    borderContainer.setBottom(vendorBtnBox);
+	}
+	
+	public void viewAddGuests() {
+		guestMessageLbl.setText("");
+		guests.removeAllElements();
+		guests = eventOrganizerController.getGuests();
+		
+	    ObservableList<Guest> guestRegObs = FXCollections.observableArrayList(guests);
+	    guestTable.setItems(guestRegObs);
+	    
+	    borderContainer.setCenter(guestTable);
+	    borderContainer.setBottom(guestBtnBox);
 	}
 	
 	public void viewEditForm() {

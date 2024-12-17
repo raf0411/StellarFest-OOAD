@@ -1,5 +1,7 @@
 package model;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
@@ -13,6 +15,7 @@ public class Invitation {
 	private String invitation_status;
 	private String invitation_role;
 	private Database db = Database.getInstance();
+	private User user = new User();
 	
 	public Invitation(String invitation_id, String event_id, String user_id, String invitation_status,
 			String invitation_role) {
@@ -28,10 +31,28 @@ public class Invitation {
 		
 	}
 
-	public void sendInvitation(String email) {
+	public void sendInvitation(String email, String eventID) {
+		String invitationID = RandomIDGenerator.generateUniqueID();
+		String query = "INSERT INTO invitation\r\n"
+				     + "VALUES (?, ?, ?, ?, ?)";
+		User invitedUser = user.getUserByEmail(email); 
 		
+		PreparedStatement ps = db.prepareStatement(query);
+		
+		try {
+			ps.setString(1, invitationID);
+			ps.setString(2, eventID);
+			ps.setString(3, invitedUser.getUser_id());
+			ps.setString(4, "Pending");
+			ps.setString(5, invitedUser.getUser_role());
+			
+			ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
+	// Salah Ini
 	public String acceptInvitation(String eventID, String userID, String invitationRole) {
 	    Invitation invitation;
 	    String invitationID = RandomIDGenerator.generateUniqueID();
@@ -45,15 +66,43 @@ public class Invitation {
 	    db.execUpdate(query);
 	    
 	    String queryDelete = "DELETE FROM invitation " +
-                "WHERE event_id = '" + eventID + "' " +
-                "AND user_id = '" + userID + "' " +
-                "AND invitation_status = 'Pending'";
+			                 "WHERE event_id = '" + eventID + "' " +
+			                 "AND user_id = '" + userID + "' " +
+			                 "AND invitation_status = 'Pending'";
 	    
 		db.execUpdate(queryDelete);
 	    
 	    return message;
 	}
 
+	public Invitation getInvitationByEventIdAndUserId(String eventId, String userId) {
+		Invitation invitation = null;
+		String query = "SELECT * FROM invitation\r\n"
+				     + "WHERE event_id = ? and user_id = ?";
+		
+		PreparedStatement ps = db.prepareStatement(query);
+
+		try {
+			ps.setString(1, eventId);
+			ps.setString(2, userId);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+	            String invitationID = rs.getString("invitation_id");
+	            String eventID = rs.getString("event_id");
+	            String userID = rs.getString("user_id");
+	            String invitationStatus = rs.getString("invitation_status");
+	            String invitationRole = rs.getString("invitation_role");
+				
+				invitation = new Invitation(invitationID, eventID, userID, invitationStatus, invitationRole);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return invitation;
+	}
 	
 	public Vector<Event> getInvitations(String email) {
 		Vector<Event> invitations = new Vector<Event>();

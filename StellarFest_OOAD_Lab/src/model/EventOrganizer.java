@@ -100,7 +100,7 @@ public class EventOrganizer extends User{
 //	}
 	
 	public void checkCreateEventInput(String eventName, String date, String location, String description) {
-		
+			
 	}
 	
 	public void checkAddVendorInput(String vendorID) {

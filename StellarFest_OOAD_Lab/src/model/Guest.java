@@ -16,11 +16,6 @@ public class Guest extends User{
 		super(user_id, user_email, user_name, user_password, user_role);
 		// TODO Auto-generated constructor stub
 	}
-	
-	public Guest(String user_id, String user_email, String user_name, String user_role) {
-		super(user_id, user_email, user_name, user_role);
-		// TODO Auto-generated constructor stub
-	}
 
 	public Guest() {
 		// TODO Auto-generated constructor stub
@@ -51,9 +46,10 @@ public class Guest extends User{
                 String userId = rs.getString("user_id");
                 String email = rs.getString("user_email");
                 String name = rs.getString("user_name");
+                String password = rs.getString("user_password");
                 String role = rs.getString("user_role");
 
-                guests.add(new Guest(userId, email, name, role));
+                guests.add(new Guest(userId, email, name, password, role));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,4 +57,29 @@ public class Guest extends User{
 
         return guests;
     }
+	
+	public Vector<Guest> getGuests() {
+		Vector<Guest> guests = new Vector<Guest>();
+		
+        try {
+        	String query = "SELECT * FROM users WHERE user_role = 'Guest'";
+            
+            PreparedStatement ps = db.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String userId = rs.getString("user_id");
+                String email = rs.getString("user_email");
+                String name = rs.getString("user_name");
+                String password = rs.getString("user_password");
+                String role = rs.getString("user_role");
+
+                guests.add(new Guest(userId, email, name, password, role));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+		
+		return guests;
+	}
 }
