@@ -25,8 +25,8 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 	BorderPane borderContainer;
 	GridPane changeProfileForm;
 	TextField emailTF, nameTF;
-	PasswordField passwordPF;
-	Label emailLbl, nameLbl, passwordLbl, messageLbl;
+	PasswordField passwordPF, oldPasswordPF;
+	Label emailLbl, nameLbl, passwordLbl, oldPasswordLbl, messageLbl;
 	Button submitBtn, backBtn;
 	VBox btnBox;
 	
@@ -110,6 +110,7 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		emailLbl = new Label("Email: ");
 		nameLbl = new Label("Name: ");
 		passwordLbl = new Label("Password: ");
+		oldPasswordLbl = new Label("Old Password: ");
 		changeProfileForm = new GridPane();
 		btnBox = new VBox();
 		
@@ -129,8 +130,11 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		changeProfileForm.add(nameLbl, 0, 2);
 		changeProfileForm.add(nameTF, 1, 2);
 		
-		changeProfileForm.add(passwordLbl, 0, 3);
-		changeProfileForm.add(passwordPF, 1, 3);
+		changeProfileForm.add(oldPasswordLbl, 0, 3);
+		changeProfileForm.add(oldPasswordPF, 1, 3);
+		
+		changeProfileForm.add(passwordLbl, 0, 4);
+		changeProfileForm.add(passwordPF, 1, 4);
 		
 		btnBox.getChildren().add(messageLbl);
 		btnBox.getChildren().add(submitBtn);
