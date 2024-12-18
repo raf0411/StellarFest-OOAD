@@ -1,5 +1,7 @@
 package view;
 
+import java.util.Optional;
+
 import controller.UserController;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -7,11 +9,14 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -19,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * The UserView class represents the user interface (UI) 
@@ -52,6 +58,20 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		this.stage.setScene(scene);
 		this.stage.setResizable(false);
 		this.stage.show();
+		
+		this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			
+			@Override
+			public void handle(WindowEvent event) {
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setContentText("Do you really want to exit StellarFest ? 😔");
+				Optional<ButtonType> resAlert = alert.showAndWait();
+				
+				if(resAlert.get() == ButtonType.CANCEL) {
+					event.consume();
+				}
+			}
+		});
 	}
 	
 	@Override

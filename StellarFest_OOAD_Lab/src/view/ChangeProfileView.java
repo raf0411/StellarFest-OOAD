@@ -1,20 +1,26 @@
 package view;
 
+import java.util.Optional;
+
 import controller.UserController;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * The ChangeProfileView class represents the user interface (UI) for 
@@ -104,6 +110,20 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		this.stage.setTitle("Change Profile");
 		this.stage.setScene(scene);
 		this.stage.show();
+		
+		this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			
+			@Override
+			public void handle(WindowEvent event) {
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setContentText("Do you really want to exit StellarFest ? 😔");
+				Optional<ButtonType> resAlert = alert.showAndWait();
+				
+				if(resAlert.get() == ButtonType.CANCEL) {
+					event.consume();
+				}
+			}
+		});
 	}
 
 	public void init() {

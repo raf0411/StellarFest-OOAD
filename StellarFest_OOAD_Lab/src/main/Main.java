@@ -28,6 +28,8 @@ public class Main extends Application {
         
         // Start the user view on the primary stage, showing the UI to the user
         userView.start(primaryStage);
+        
+        
     }
 
     /**

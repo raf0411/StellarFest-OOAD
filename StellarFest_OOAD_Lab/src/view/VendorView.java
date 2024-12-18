@@ -1,5 +1,6 @@
 package view;
 
+import java.util.Optional;
 import java.util.Vector;
 
 import controller.InvitationController;
@@ -12,7 +13,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -23,6 +26,7 @@ import javafx.scene.control.TableSelectionModel;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -32,6 +36,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Event;
 import model.Invitation;
 
@@ -89,6 +94,20 @@ public class VendorView extends Application implements EventHandler<ActionEvent>
 		this.stage.setTitle("Vendor View");
 		this.stage.setScene(scene);
 		this.stage.show();
+		
+		this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			
+			@Override
+			public void handle(WindowEvent event) {
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setContentText("Do you really want to exit StellarFest ? 😔");
+				Optional<ButtonType> resAlert = alert.showAndWait();
+				
+				if(resAlert.get() == ButtonType.CANCEL) {
+					event.consume();
+				}
+			}
+		});
 	}
 	
 	@Override
