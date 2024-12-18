@@ -107,6 +107,7 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		emailTF = new TextField();
 		nameTF = new TextField();
 		passwordPF = new PasswordField();
+		oldPasswordPF = new PasswordField();
 		emailLbl = new Label("Email: ");
 		nameLbl = new Label("Name: ");
 		passwordLbl = new Label("Password: ");
