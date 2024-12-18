@@ -20,6 +20,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+/**
+ * The UserView class represents the user interface (UI) 
+ * for users when they want to Register or Login.
+ */
+
 public class UserView extends Application implements EventHandler<ActionEvent>{
 	private UserController userController = new UserController();
 	

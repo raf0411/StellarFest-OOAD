@@ -35,6 +35,11 @@ import javafx.stage.Stage;
 import model.Event;
 import model.Invitation;
 
+/**
+ * The VendorView class represents the user interface (UI) 
+ * for Vendor User.
+ */
+
 public class VendorView extends Application implements EventHandler<ActionEvent>{
 	private VendorController vendorController = new VendorController();
 	private InvitationController invitationController = new InvitationController();

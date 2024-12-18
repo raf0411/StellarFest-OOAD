@@ -8,6 +8,11 @@ import java.util.Vector;
 import database.Database;
 import util.RandomIDGenerator;
 
+/**
+ * The Event class represents an event in the system.
+ * It contains methods for creating, viewing, editing, and deleting events.
+ * It also includes functionality to manage event guests and vendors.
+ */
 public class Event {
 	private String event_id;
 	private String event_name;
@@ -20,6 +25,16 @@ public class Event {
 	
 	private Database db = Database.getInstance();
 	
+	/**
+	 * Constructor to initialize an Event object with details.
+	 *
+	 * @param event_id The unique ID of the event.
+	 * @param event_name The name of the event.
+	 * @param event_date The date of the event.
+	 * @param event_location The location of the event.
+	 * @param event_description A description of the event.
+	 * @param organizer_id The ID of the organizer of the event.
+	 */
 	public Event(String event_id, String event_name, String event_date, String event_location, String event_description,
 			String organizer_id) {
 		super();
@@ -31,14 +46,25 @@ public class Event {
 		this.organizer_id = organizer_id;
 	}
 	
+	/**
+	 * Default constructor for the Event class.
+	 */
 	public Event() {
-		
+		// Default constructor
 	}
 	
+	/**
+	 * Creates a new event in the database.
+	 *
+	 * @param eventName The name of the event.
+	 * @param date The date of the event.
+	 * @param location The location of the event.
+	 * @param description A description of the event.
+	 * @param organizerID The ID of the event's organizer.
+	 */
 	public void createEvent(String eventName, String date, String location, String description, String organizerID) {
 		String eventID = RandomIDGenerator.generateUniqueID();
-		String query = "INSERT INTO events\r\n" +
-				   	   "VALUES (?, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?)";
 		
 		PreparedStatement ps = db.prepareStatement(query);
 		
@@ -56,10 +82,22 @@ public class Event {
 		}
 	}
 	
+	/**
+	 * Views the details of an event based on the event ID.
+	 *
+	 * @param eventID The ID of the event to view.
+	 * @return The Event object containing details of the event.
+	 */
 	public Event viewEventDetails(String eventID) {
-		return null;
+		return null; // Placeholder for functionality
 	}
 	
+	/**
+	 * Retrieves the events that the user has accepted invitations for.
+	 *
+	 * @param email The email of the user.
+	 * @return A Vector of events that the user has accepted invitations for.
+	 */
 	public Vector<Event> viewAcceptedEvents(String email) {
 	    Vector<Event> events = new Vector<Event>();
 	    
@@ -97,7 +135,11 @@ public class Event {
 	    return events;
 	}
 
-	
+	/**
+	 * Retrieves all events in the system.
+	 *
+	 * @return A Vector of all events in the system.
+	 */
 	public Vector<Event> getAllEvents(){
 		Vector<Event> events = new Vector<Event>();
 		
@@ -122,11 +164,16 @@ public class Event {
 		return events;
 	}
 	
+	/**
+	 * Retrieves events that are organized by a specific user based on their user ID.
+	 *
+	 * @param userID The user ID of the event organizer.
+	 * @return A Vector of events organized by the user.
+	 */
 	public Vector<Event> getAllEventOrganizerEvents(String userID){
 		Vector<Event> events = new Vector<Event>();
 		
-		String query = "SELECT * FROM events\r\n"
-					 + "WHERE organizer_id = ?";
+		String query = "SELECT * FROM events WHERE organizer_id = ?";
 		
 		try {
 			PreparedStatement ps = db.prepareStatement(query);
@@ -150,10 +197,15 @@ public class Event {
 		return events;
 	}
 	
+	/**
+	 * Edits the name of an event based on the event ID.
+	 *
+	 * @param eventID The ID of the event to edit.
+	 * @param eventName The new name of the event.
+	 * @return A message indicating the success of the operation.
+	 */
 	public String editEventName(String eventID, String eventName) {
-		String query = "UPDATE events\r\n"
-					 + "SET event_name = ?\r\n"
-					 + "WHERE event_id = ?";
+		String query = "UPDATE events SET event_name = ? WHERE event_id = ?";
 		
 		PreparedStatement ps = db.prepareStatement(query);
 		
@@ -167,13 +219,17 @@ public class Event {
 		}
 		
 		String message = "Edit Successful!";
-
 		return message;
 	}
 	
+	/**
+	 * Retrieves an event by its event ID.
+	 *
+	 * @param eventId The ID of the event to retrieve.
+	 * @return The Event object corresponding to the event ID.
+	 */
 	public Event getEventByEventId(String eventId) {
-		String query = "SELECT * FROM events\r\n"
-			         + "WHERE event_id = ?";
+		String query = "SELECT * FROM events WHERE event_id = ?";
 		Event event = null;
 		
 		PreparedStatement ps = db.prepareStatement(query);
@@ -198,13 +254,15 @@ public class Event {
 			e.printStackTrace();
 		}
 		
-		if(event != null) {
-			return event;
-		} else {
-			return event;
-		}
+		return event != null ? event : null;
 	}
 	
+	/**
+	 * Deletes an event from the system.
+	 *
+	 * @param eventID The ID of the event to delete.
+	 * @return A message indicating the success or failure of the deletion operation.
+	 */
 	public String deleteEvent(String eventID) {
 	    String deleteInvitationsQuery = "DELETE FROM invitation WHERE event_id = ?";
 	    String deleteEventQuery = "DELETE FROM events WHERE event_id = ?";
@@ -221,16 +279,17 @@ public class Event {
 	            ps2.executeUpdate();
 	        }
 	        
-	        message = "Delete event sucessful!";
+	        message = "Delete event successful!";
 
 	    } catch (SQLException e) {
-	    	message = "There was an error, delete event unsucessful!";
+	    	message = "There was an error, delete event unsuccessful!";
 	        e.printStackTrace();
 	    }
 	    
 	    return message;
 	}
-	
+
+	// Getters and Setters
 	public String getEvent_id() {
 		return event_id;
 	}

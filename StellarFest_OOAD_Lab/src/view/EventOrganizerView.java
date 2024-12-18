@@ -40,6 +40,11 @@ import model.Event;
 import model.Guest;
 import model.Vendor;
 
+/**
+ * The EventOrganizerView class represents the user interface (UI) for 
+ * the Event Organizer
+ */
+
 public class EventOrganizerView extends Application implements EventHandler<ActionEvent>{
 	private EventOrganizerController eventOrganizerController = new EventOrganizerController();
 	private EventController eventController = new EventController();

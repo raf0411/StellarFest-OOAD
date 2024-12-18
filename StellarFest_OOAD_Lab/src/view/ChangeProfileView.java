@@ -16,6 +16,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * The ChangeProfileView class represents the user interface (UI) for 
+ * user to change their profile
+ */
+
 public class ChangeProfileView extends Application implements EventHandler<ActionEvent>{
 	private UserController userController = new UserController();
 	private String userEmail;
@@ -82,10 +87,11 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 			String userID = userController.getUserByEmail(userEmail).getUser_id();
 			String email = emailTF.getText();
 			String name = nameTF.getText();
+			String oldPassword = oldPasswordPF.getText();
 			String password = passwordPF.getText();
-			String oldPassword = userController.getUserByEmail(userEmail).getUser_password();
 			
 			changeProfile(userID, email, name, oldPassword, password);
+			
 		}
 	}
 
@@ -162,6 +168,7 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 	public void clearForm() {
 		emailTF.setText("");
 		nameTF.setText("");
+		oldPasswordPF.setText("");
 		passwordPF.setText("");
 	}
 

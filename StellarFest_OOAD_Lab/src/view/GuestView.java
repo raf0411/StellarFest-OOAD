@@ -31,6 +31,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Event;
 
+/**
+ * The GuestView class represents the user interface (UI) for 
+ * the Guest User
+ */
+
 public class GuestView extends Application implements EventHandler<ActionEvent>{
 	private GuestController guestController = new GuestController();
 

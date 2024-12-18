@@ -33,6 +33,11 @@ import model.Guest;
 import model.User;
 import model.Vendor;
 
+/**
+ * The AdminView class represents the user interface (UI) for 
+ * the admin panel of the event management system.
+ */
+
 public class AdminView extends Application implements EventHandler<ActionEvent>{
 	private AdminController adminController = new AdminController();
 	private String eventID;
