@@ -103,10 +103,11 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		toRegisBtn = new Button("register");
 		toRegisBtn.setOnAction(this);
 		
+		rolesCB.getItems().add("-");
 		rolesCB.getItems().add("Event Organizer");
 		rolesCB.getItems().add("Vendor");
 		rolesCB.getItems().add("Guest");
-		rolesCB.getSelectionModel();
+		rolesCB.getSelectionModel().select("-");
 		
 		scene = new Scene(bp, 1280, 720);
 	}
@@ -237,7 +238,7 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 		String password = passwordPF.getText();
 		String email = emailTF.getText();
 		String role = rolesCB.getSelectionModel().getSelectedItem();
-		
+
 		message = userController.register(email, username, password, role);
 		
 		infoLbl.setText(message);

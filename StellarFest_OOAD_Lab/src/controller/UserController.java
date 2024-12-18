@@ -145,7 +145,7 @@ public class UserController {
 		} else if (password.length() < 5) {
 			message = "Password must at least be 5 characters long!";
 			return message;
-		} else if (role.isEmpty()) {
+		} else if (role.isEmpty() || role == null || role.equals("-")) {
 			message = "Role must pick using ComboBox!";
 			return message;
 		} else {
