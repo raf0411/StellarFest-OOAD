@@ -95,7 +95,7 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 			@Override
 			public void handle(WindowEvent event) {
 				Alert alert = new Alert(AlertType.CONFIRMATION);
-				alert.setContentText("Do you really want to exit StellarFest ? 😔");
+				alert.setContentText("Do you really want to exit StellarFest ? 😭");
 				Optional<ButtonType> resAlert = alert.showAndWait();
 				
 				if(resAlert.get() == ButtonType.CANCEL) {

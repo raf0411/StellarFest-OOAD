@@ -105,7 +105,7 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 			@Override
 			public void handle(WindowEvent event) {
 				Alert alert = new Alert(AlertType.CONFIRMATION);
-				alert.setContentText("Do you really want to exit StellarFest ? 😔");
+				alert.setContentText("Do you really want to exit StellarFest ? 😭");
 				Optional<ButtonType> resAlert = alert.showAndWait();
 				
 				if(resAlert.get() == ButtonType.CANCEL) {
