@@ -205,10 +205,11 @@ public class Event {
 		}
 	}
 	
-	public void deleteEvent(String eventID) {
+	public String deleteEvent(String eventID) {
 	    String deleteInvitationsQuery = "DELETE FROM invitation WHERE event_id = ?";
 	    String deleteEventQuery = "DELETE FROM events WHERE event_id = ?";
-
+	    String message = "";
+	    
 	    try {
 	        try (PreparedStatement ps1 = db.prepareStatement(deleteInvitationsQuery)) {
 	            ps1.setString(1, eventID);
@@ -219,10 +220,15 @@ public class Event {
 	            ps2.setString(1, eventID);
 	            ps2.executeUpdate();
 	        }
+	        
+	        message = "Delete event sucessful!";
 
 	    } catch (SQLException e) {
+	    	message = "There was an error, delete event unsucessful!";
 	        e.printStackTrace();
 	    }
+	    
+	    return message;
 	}
 	
 	public String getEvent_id() {

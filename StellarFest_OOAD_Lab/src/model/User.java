@@ -30,9 +30,10 @@ public class User {
 		
 	}
 
-	public void register(String email, String name, String password, String role) {
+	public String register(String email, String name, String password, String role) {
 		User user;
 		String userID = RandomIDGenerator.generateUniqueID();
+		String message = "";
 		
 		if(role == "Event Organizer") {
 			user = new EventOrganizer(userID, email, name, password, role);
@@ -55,9 +56,14 @@ public class User {
 			ps.setString(5, role);
 			
 			ps.execute();
+			
+			message = "Register sucessful!";
 		} catch (SQLException e) {
+			message = "There was an error, register unsucessful!";
 			e.printStackTrace();
 		}
+		
+		return message;
 	}
 	
 	public Boolean login(String email, String password) {
@@ -151,8 +157,6 @@ public class User {
 	    return message;
 	}
 
-
-	
 	public User getUserByEmail(String email) {
 	    User user = null;
 	    String query = "SELECT * FROM users WHERE user_email = ?";
@@ -228,17 +232,22 @@ public class User {
 		return users;
 	}
 	
-	public void deleteUser(String userID) {
+	public String deleteUser(String userID) {
+		String message = "";
 		String query = "DELETE FROM users WHERE user_id = ?";
 		
 	    try {
 	        try (PreparedStatement ps = db.prepareStatement(query)) {
 	        	ps.setString(1, userID);
 	        	ps.executeUpdate();
+	        	message = "User successfully deleted!";
 	        }
 	    } catch (SQLException e) {
+	    	message = "There was an error, delete unsucessful!";
 	        e.printStackTrace();
 	    }
+	    
+	    return message;
 	}
 	
 	public String getUser_id() {

@@ -87,7 +87,6 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 			
 			changeProfile(userID, email, name, oldPassword, password);
 		}
-	
 	}
 
 	@Override

@@ -22,8 +22,8 @@ public class Admin extends User{
 		
 	}
 
-	public void deleteUser(String userID) {
-		
+	public String deleteUser(String userID) {
+		return null;
 	}
 	
 	public void getAllEvents() {

@@ -10,8 +10,7 @@ import database.Database;
 import util.RandomIDGenerator;
 
 public class Vendor extends User{
-	private String accepted_invitations;
-	private Vector<Vendor> vendors;
+	private Vector<Event> accepted_invitations;
 	private static Database db = Database.getInstance();
 
 	public Vendor(String user_id, String user_email, String user_name, String user_password, String user_role) {

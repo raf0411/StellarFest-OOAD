@@ -8,8 +8,7 @@ import java.util.Vector;
 import database.Database;
 
 public class Guest extends User{
-	private String accepted_invitations;
-	private Vector<Guest> guests;
+	private Vector<Event> accepted_invitations;
 	private static Database db = Database.getInstance();
 
 	public Guest(String user_id, String user_email, String user_name, String user_password, String user_role) {

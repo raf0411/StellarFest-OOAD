@@ -28,8 +28,7 @@ public class AdminController {
 		if(eventID == null || eventID.isEmpty()) {
 			return "Event is not filled!";
 		} else {
-			event.deleteEvent(eventID);
-			return "Event successfully deleted!";
+			return event.deleteEvent(eventID);
 		}
 	}
 
@@ -37,8 +36,7 @@ public class AdminController {
 		if(userID == null || userID.isEmpty()) {
 			return "User is not filled!";
 		} else {
-			user.deleteUser(userID);
-			return "User successfully deleted!";
+			return user.deleteUser(userID);
 		}
 	}
 	

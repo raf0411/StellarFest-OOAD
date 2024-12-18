@@ -21,8 +21,7 @@ public class UserController {
 		if(!message.equals("Registration Successful!")) {
 			return message;
 		} else {
-			user.register(email, name, password, role);
-			return message;
+			return user.register(email, name, password, role);
 		}
 	}
 	
