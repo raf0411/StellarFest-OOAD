@@ -100,6 +100,7 @@ public class GuestView extends Application implements EventHandler<ActionEvent>{
 	        ChangeProfileView changeProfileView = new ChangeProfileView();
 	        
 	        try {
+	        	changeProfileView.setUserEmail(email);
 	            changeProfileView.start(this.stage);
 	        } catch (Exception ex) {
 	            ex.printStackTrace();
