@@ -6,6 +6,7 @@ import controller.UserController;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -37,7 +38,7 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 	GridPane changeProfileForm;
 	TextField emailTF, nameTF;
 	PasswordField passwordPF, oldPasswordPF;
-	Label emailLbl, nameLbl, passwordLbl, oldPasswordLbl, messageLbl;
+	Label titleLbl, emailLbl, nameLbl, passwordLbl, oldPasswordLbl, messageLbl;
 	Button submitBtn, backBtn;
 	VBox btnBox;
 	
@@ -127,6 +128,7 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 	}
 
 	public void init() {
+		titleLbl = new Label("Change Profile");
 		stage = new Stage();
 		borderContainer = new BorderPane();
 		scene = new Scene(borderContainer, 1280, 720);
@@ -170,8 +172,13 @@ public class ChangeProfileView extends Application implements EventHandler<Actio
 		changeProfileForm.setAlignment(Pos.CENTER);
 		btnBox.setAlignment(Pos.CENTER);
 		
+		borderContainer.setTop(titleLbl);
 		borderContainer.setCenter(changeProfileForm);
 		borderContainer.setBottom(btnBox);
+		
+		borderContainer.setMargin(changeProfileForm, new Insets(10));
+		
+		btnBox.setMargin(backBtn, new Insets(10));
 	}
 	
 	public void changeProfile(String userID, String email, String name, String oldPassword, String newPassword) {

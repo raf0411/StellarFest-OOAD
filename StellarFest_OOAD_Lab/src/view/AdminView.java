@@ -271,10 +271,15 @@ public class AdminView extends Application implements EventHandler<ActionEvent>{
 		
 		btnBox.getChildren().add(messageLbl);
 		btnBox.getChildren().add(deleteEventBtn);
+		
+		btnBox.setMargin(deleteEventBtn, new Insets(10));
+		
 		userBtnBox.getChildren().add(userMessageLbl);
 		userBtnBox.getChildren().add(deleteUserBtn);
 		btnBox.setAlignment(Pos.CENTER);
 		userBtnBox.setAlignment(Pos.CENTER);
+		
+		userBtnBox.setMargin(deleteUserBtn, new Insets(10));
 		
 		borderContainer.setTop(navBar);
 		

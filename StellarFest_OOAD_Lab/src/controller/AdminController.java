@@ -49,7 +49,7 @@ public class AdminController {
 	 */
 	public String deleteEvent(String eventID) {
 		if(eventID == null || eventID.isEmpty()) {
-			return "Event is not filled!";
+			return "Select an event!";
 		} else {
 			return event.deleteEvent(eventID);
 		}
@@ -62,12 +62,12 @@ public class AdminController {
 	 * @return A message indicating success or an error if the user ID is invalid.
 	 */
 	public String deleteUser(String userID) {	
-		if(user.getUserByID(userID).getUser_role().equals("Admin")) {
-			return "Admin cannot be deleted!"; // Ensuring admin won't be deleted
-		}
+		
 		
 		if(userID == null || userID.isEmpty()) {
-			return "User is not filled!";
+			return "Select a user!";
+		} else if(user.getUserByID(userID).getUser_role().equals("Admin")) {
+			return "Admin cannot be deleted!"; // Ensuring admin won't be deleted
 		} else {
 			return user.deleteUser(userID);
 		}
