@@ -136,6 +136,9 @@ public class UserController {
 		if (email.isEmpty()) {
 			message = "Email cannot be empty!";
 			return message;
+		} else if(!email.endsWith(".com") || !email.contains("@")) {
+			message = "Email must be a valid one!";
+			return message;
 		} else if (name.isEmpty()) {
 			message = "Username cannot be empty!";
 			return message;
