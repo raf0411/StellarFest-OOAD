@@ -308,10 +308,11 @@ public class UserView extends Application implements EventHandler<ActionEvent>{
 	}
 	
 	private void clearFormField() {
+		infoLbl.setText("");
 		emailTF.setText("");
 		usernameTF.setText("");
 		passwordPF.setText("");
-		rolesCB.setValue(null);
+		rolesCB.setValue("-");
 	}
 	
 	private void switchToRegisPage(Stage s) {
