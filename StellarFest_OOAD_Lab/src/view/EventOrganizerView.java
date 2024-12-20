@@ -1,6 +1,7 @@
 package view;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Vector;
 
@@ -394,6 +395,9 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 	}
 	
 	public void viewOrganizedEventDetails(String eventID) {
+		ArrayList<String> guestAttendeesDetail = new ArrayList<>();
+		ArrayList<String> vendorAttendeesDetail = new ArrayList<>();
+		
 		Event tempEvent = eventOrganizerController.viewOrganizedEventDetails(eventID);
 		
 		eventDetailContainer.getChildren().clear();
@@ -417,9 +421,17 @@ public class EventOrganizerView extends Application implements EventHandler<Acti
 		eventDetailContainer.add(vendorAttendees, 1, 6);
 		
 		eventDetailContainer.setAlignment(Pos.CENTER);
+	
+		for (Guest g : tempEvent.getGuests()) {
+			guestAttendeesDetail.add(g.getUser_name());
+		}
 		
-		guestAttendees.setText(tempEvent.getGuests().toString());
-		vendorAttendees.setText(tempEvent.getVendors().toString());
+		for (Vendor v : tempEvent.getVendors()) {
+			vendorAttendeesDetail.add(v.getUser_name());
+		}
+		
+		guestAttendees.setText(guestAttendeesDetail.toString());
+		vendorAttendees.setText(vendorAttendeesDetail.toString());
 		
 		borderContainer.setCenter(eventDetailContainer);
 		borderContainer.setBottom(eventDetailBtnBox);

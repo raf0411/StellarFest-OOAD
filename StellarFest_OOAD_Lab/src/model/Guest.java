@@ -68,11 +68,11 @@ public class Guest extends User {
 
         try {
             // SQL query to retrieve guest details by event ID
-            String query = "SELECT u.user_id, u.user_email, u.user_name, u.user_role " +
-                           "FROM attendees ea " +
-                           "JOIN users u ON ea.attendee_id = u.user_id " +
-                           "WHERE ea.event_id = ? AND u.user_role = 'guest'";
-            
+            String query = "SELECT u.user_id, u.user_email, u.user_name, u.user_password, u.user_role " +
+		                   "FROM invitation i " +
+		                   "JOIN users u ON i.user_id = u.user_id " +
+		                   "WHERE i.event_id = ? AND i.invitation_role = 'Guest' AND i.invitation_status = 'Accepted'";
+		            
             PreparedStatement ps = db.prepareStatement(query); // Prepare the statement
             ps.setString(1, eventID); // Set the event ID as a parameter for the query
             ResultSet rs = ps.executeQuery(); // Execute the query

@@ -113,13 +113,14 @@ public class Vendor extends User {
      */
     public static Vector<Vendor> getVendorsByTransactionID(String eventID) {
         Vector<Vendor> vendors = new Vector<Vendor>();
-
+       
         try {
             // SQL query to select vendors attending the specified event.
-            String query = "SELECT u.user_id, u.user_email, u.user_name, u.user_role " +
-                           "FROM attendees ea " +
-                           "JOIN users u ON ea.attendee_id = u.user_id " +
-                           "WHERE ea.event_id = ? AND u.user_role = 'vendor'";
+            String query = "SELECT u.user_id, u.user_email, u.user_name, u.user_password, u.user_role " +
+		                   "FROM invitation i " +
+		                   "JOIN users u ON i.user_id = u.user_id " +
+		                   "WHERE i.event_id = ? AND i.invitation_role = 'Vendor' AND i.invitation_status = 'Accepted'";
+		    
             PreparedStatement ps = db.prepareStatement(query);
             ps.setString(1, eventID);  // Set the event ID parameter.
             ResultSet rs = ps.executeQuery();  // Execute the query to get vendors.

@@ -116,7 +116,7 @@ public class EventOrganizer extends User {
                 // Retrieve associated vendors and guests for the event
                 Vector<Vendor> vendors = Vendor.getVendorsByTransactionID(eventID);
                 Vector<Guest> guests = Guest.getGuestsByTransactionID(eventID);
-
+                
                 // Set the vendors and guests for the event
                 detailEvent.setVendors(vendors);
                 detailEvent.setGuests(guests);
