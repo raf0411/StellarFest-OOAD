@@ -10,10 +10,10 @@ import java.sql.Statement;
 
 public class Database {
     // Database connection credentials
-    private final String USERNAME = "raffi"; // Your database username
-    private final String PASSWORD = "soccerball99!"; // Your database password
-    private final String DATABASE = "stellarfestdb"; // Your database name
-    private final String HOST = "desktop-6mm7jdb"; // Database host (could be localhost or remote server)
+    private final String USERNAME = ""; // Your database username
+    private final String PASSWORD = ""; // Your database password
+    private final String DATABASE = ""; // Your database name
+    private final String HOST = ""; // Database host (could be localhost or remote server)
     
     // The JDBC connection string to establish connection to the database
     private final String CONNECTION = String.format("jdbc:mysql://%s/%s", HOST, DATABASE);
