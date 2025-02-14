@@ -1,6 +1,6 @@
 # Object-oriented Analysis & Design Final Lab Project
 
-This Repo contains code for an Event Management Application as a project for Course Object-oriented Analysis & Design Lab
+This Repo contains code for an Event Management Application as a final lab project for course Object-oriented Analysis & Design Lab
 
 ## Tools
 * Eclipse
